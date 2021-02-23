@@ -13,16 +13,10 @@ class TicketStatus(models.TextChoices):
 
 
 class Owner(models.Model):
-    class Meta:
-        abstract = True
-
-
-class Individual(Owner):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    admin = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Organization(Owner):
-    admin = models.ForeignKey(User, on_delete=models.CASCADE)
     members = models.ManyToManyField(User)
     name = models.TextField(unique=True)
 
@@ -36,11 +30,14 @@ class Tag(models.Model):
 
 class Ticket(models.Model):
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.OPEN)
-    owner = models.ForeignKey(Owner, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
     ts_open = models.DateTimeField(auto_now_add=True)
     ts_last_modified = models.DateTimeField(auto_now=True)
     ts_closed = models.DateTimeField(null=True, blank=True)
+
+    def is_closed(self):
+        return self.status == TicketStatus.CLOSED
 
 
 class Event(models.Model):
@@ -48,4 +45,5 @@ class Event(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(max_length=10*1024*1024, null=True, blank=True)
-    answer = models.TextField()
+    answer = models.TextField(null=True)
+    new_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True)
