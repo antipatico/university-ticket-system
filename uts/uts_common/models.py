@@ -30,7 +30,10 @@ class Tag(models.Model):
 
 class Ticket(models.Model):
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.OPEN)
-    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
+    name = models.TextField(null=False, blank=False)
+    description = models.TextField(null=True, blank=True)
+    subscribers = models.ManyToManyField(User)
     tags = models.ManyToManyField(Tag)
     ts_open = models.DateTimeField(auto_now_add=True)
     ts_last_modified = models.DateTimeField(auto_now=True)
@@ -40,10 +43,17 @@ class Ticket(models.Model):
         return self.status == TicketStatus.CLOSED
 
 
-class Event(models.Model):
+class TicketEvent(models.Model):
+    owner = models.ForeignKey(Owner, on_delete=models.PROTECT) # Note: this will refer to the old owner in case of Escalation
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.ANSWER)
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="events")
     timestamp = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(max_length=10*1024*1024, null=True, blank=True)
-    answer = models.TextField(null=True)
-    new_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True)
+    info = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["timestamp"]
+
+
+class Person(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
