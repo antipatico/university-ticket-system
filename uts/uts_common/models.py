@@ -55,5 +55,12 @@ class TicketEvent(models.Model):
         ordering = ["timestamp"]
 
 
-class Person(models.Model):
+class Notification(models.Model):
+    user = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    event = models.ForeignKey(TicketEvent, on_delete=models.CASCADE)
+    read = models.BooleanField(default=False)
+
+
+class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email_notifications = models.BooleanField(default=True)
