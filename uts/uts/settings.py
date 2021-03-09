@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'uts_common',
+    'uts_shibboleth',
+    'uts_rest',
+    'uts_mailer',
     'uts_scheduler',
 
     'django.contrib.admin',
