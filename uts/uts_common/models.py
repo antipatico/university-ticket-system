@@ -15,10 +15,16 @@ class TicketStatus(models.TextChoices):
 class Owner(models.Model):
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.admin.get_full_name()
+
 
 class Organization(Owner):
     members = models.ManyToManyField(User)
     name = models.TextField(unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Tag(models.Model):
