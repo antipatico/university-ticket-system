@@ -3,5 +3,6 @@ from . import views
 
 app_name = "uts_shibboleth"
 urlpatterns = [
-    path('test/', views.shibboleth_test, name="test")
+    path('login/', views.shibboleth_test, name="login"),
+#    path('test/', views.shibboleth_test, name="test")
 ]
