@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import django.db.models
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -145,3 +147,5 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 # that supports multiple background worker processes instead (e.g. Dramatiq, Celery, Django-RQ,
 # etc. See: https://djangopackages.org/grids/g/workers-queues-tasks/ for popular options).
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
