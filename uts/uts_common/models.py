@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from polymorphic.models import PolymorphicModel
 
 
 class TicketStatus(models.TextChoices):
@@ -12,14 +13,19 @@ class TicketStatus(models.TextChoices):
     ANSWER = 'ANSWER', 'Risposta'
 
 
-class Owner(models.Model):
-    admin = models.ForeignKey(User, on_delete=models.CASCADE)
+class Owner(PolymorphicModel):
+    pass
+
+
+class Individual(Owner):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.admin.get_full_name()
+        return self.user.get_full_name() or self.user.username
 
 
 class Organization(Owner):
+    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="administered_organizations")
     members = models.ManyToManyField(User)
     name = models.TextField(unique=True)
 
@@ -39,8 +45,8 @@ class Ticket(models.Model):
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
     name = models.TextField(null=False, blank=False)
     description = models.TextField(null=True, blank=True)
-    subscribers = models.ManyToManyField(User)
-    tags = models.ManyToManyField(Tag)
+    subscribers = models.ManyToManyField(User, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     ts_open = models.DateTimeField(auto_now_add=True)
     ts_last_modified = models.DateTimeField(auto_now=True)
     ts_closed = models.DateTimeField(null=True, blank=True)
