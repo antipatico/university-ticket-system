@@ -3,5 +3,6 @@ from . import views
 
 app_name = "uts_common"
 urlpatterns = [
-    path('', views.index, name="index")
+    path('', views.index, name="index"),
+    path('logout', views.logout, name="logout")
 ]
