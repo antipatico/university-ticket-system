@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
@@ -22,4 +24,4 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('shibboleth/', include('uts_shibboleth.urls', namespace="uts_shibboleth")),
     path('', include('uts_common.urls', namespace="uts_common"))
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
