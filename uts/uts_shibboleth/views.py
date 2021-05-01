@@ -1,11 +1,14 @@
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.contrib.auth import login
-from uts_common.models import User
 from django.shortcuts import render
+
+from uts_common.models import User
 
 
 def shibboleth_login(request: HttpRequest):
     meta = request.META
+    if "HTTP_EPPN" not in meta:
+        return render(request, "uts_shibboleth/shiberror.html")
     user, created = User.objects.get_or_create(username=meta["HTTP_EPPN"])
     if created:
         user.set_unusable_password()

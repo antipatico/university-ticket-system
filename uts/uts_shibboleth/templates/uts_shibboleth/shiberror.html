@@ -1,0 +1,9 @@
+{% extends "uts/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="text-center">
+    <img src="{% static 'images/sad-puppy.png' %}" class="img-fluid" style="max-height: 300px">
+    <h3 class="text-danger mt-3">An error occurred while trying to login</h3>
+  </div>
+{% endblock %}
