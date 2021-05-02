@@ -20,7 +20,7 @@ def shibboleth_login(request: HttpRequest):
             user.first_name = f"{meta['HTTP_GIVENNAME']}".capitalize()
         if "HTTP_SN" in meta:
             user.last_name = f"{meta['HTTP_SN']}".capitalize()
-    user.save()
+        user.save()
     login(request, user)
 
 
