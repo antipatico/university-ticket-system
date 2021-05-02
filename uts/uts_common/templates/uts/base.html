@@ -78,12 +78,21 @@
 {% block customscripts %}{% endblock %}
 {% if not request.user.authenticated %}
 <script type="text/javascript">
-  $("#btn-login").click((e) => {
-     if (e.shiftKey) {
-         e.preventDefault();
-         window.location.href = "{% url 'uts_common:local_login'  %}";
-     }
-  });
+    $("#btn-login").click((e) => {
+        if (e.shiftKey) {
+            e.preventDefault();
+            window.location.href = "{% url 'uts_common:local_login'  %}";
+        }
+    });
+    $('#btn-login .btn').mousemove(function(e) {
+        if (e.shiftKey) {
+            $(this).removeClass("btn-primary");
+            $(this).addClass("btn-danger");
+        } else {
+            $(this).removeClass("btn-danger");
+            $(this).addClass("btn-primary");
+        }
+    });
 </script>
 {% endif %}
 </body>
