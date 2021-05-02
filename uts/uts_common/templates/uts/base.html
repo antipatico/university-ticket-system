@@ -45,7 +45,7 @@
       </div>
     {% else %}
     <div class="col-md-3 text-end">
-      <a href="{% url 'uts_shibboleth:login' %}">
+      <a id="btn-login" href="{% url 'uts_shibboleth:login' %}">
         <button type="button" class="btn btn-primary">Login</button>
       </a>
     </div>
@@ -76,5 +76,15 @@
         crossorigin="anonymous"></script>
 {% endif %}
 {% block customscripts %}{% endblock %}
+{% if not request.user.authenticated %}
+<script type="text/javascript">
+  $("#btn-login").click((e) => {
+     if (e.shiftKey) {
+         e.preventDefault();
+         window.location.href = "{% url 'uts_common:local_login'  %}";
+     }
+  });
+</script>
+{% endif %}
 </body>
 </html>

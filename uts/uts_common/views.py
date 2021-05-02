@@ -14,3 +14,7 @@ def index(request):
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
+
+
+def local_login(request):
+    return render(request, "uts/local-login.html")
