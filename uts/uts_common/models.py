@@ -26,7 +26,7 @@ class Individual(Owner):
 
 class Organization(Owner):
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="administered_organizations")
-    members = models.ManyToManyField(User)
+    members = models.ManyToManyField(User, related_name="organizations")
     name = models.TextField(unique=True)
 
     def __str__(self):
@@ -45,7 +45,7 @@ class Ticket(models.Model):
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
     name = models.TextField(null=False, blank=False)
     description = models.TextField(null=True, blank=True)
-    subscribers = models.ManyToManyField(User, blank=True)
+    subscribers = models.ManyToManyField(User, blank=True, related_name="subscribed_tickets")
     tags = models.ManyToManyField(Tag, blank=True)
     ts_open = models.DateTimeField(auto_now_add=True)
     ts_last_modified = models.DateTimeField(auto_now=True)

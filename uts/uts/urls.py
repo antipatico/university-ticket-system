@@ -21,7 +21,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('accounts/', include('django.contrib.auth.urls')),
     path('shibboleth/', include('uts_shibboleth.urls', namespace="uts_shibboleth")),
-    path('', include('uts_common.urls', namespace="uts_common"))
+    path('api/v1/', include('uts_rest.urls', namespace="uts_rest")),
+    path('', include('uts_common.urls', namespace="uts_common")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

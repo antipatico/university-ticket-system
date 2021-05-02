@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     'django_apscheduler',
     'polymorphic',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
