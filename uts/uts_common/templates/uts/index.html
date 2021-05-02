@@ -1,1 +1,42 @@
 {% extends "uts/base.html" %}
+{% load static %}
+{% block content %}
+      <div id="ticketsApp">
+      <div v-if="openedTicket == null">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title" style="margin-bottom: 22px;">Attività Recenti</h4>
+            <div class="row">
+              <div class="col-sm-12 col-md-6 col-lg-4 mb-4" v-for="ticket in recentTickets">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title bi" :class="getIconClass(ticket.status)" v-on:click="openedTicket=ticket.id">
+                      &nbsp;$% ticket.name %$</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">$% ticket.description %$</h6>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item bi" :class="getIconClass(event.status)" v-for="event in ticket.events">&nbsp;$% event.owner.name + ' ' + getEventMessage(event.status) %$</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title" style="margin-bottom: 22px;">I Miei Ticket</h4>
+          </div>
+        </div>
+      </div>
+
+      <div v-else>
+        Dettagli ticket {{ openedTicket }}
+        <br>
+        <span v-on:click="openedTicket=null"> Chiudi</span>
+      </div>
+    </div>
+{% endblock %}
+{% block customscripts %}
+  <script src="{% static 'js/index.js' %}"></script>
+{% endblock %}

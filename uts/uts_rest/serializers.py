@@ -3,8 +3,8 @@ from uts_common.models import *
 
 
 class OwnerSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField('get_name')
-    type = serializers.SerializerMethodField('get_type')
+    name = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     def get_name(self, owner):
         return f"{owner}"
@@ -27,11 +27,21 @@ class TicketEventSerializer(serializers.ModelSerializer):
 
 class TicketSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
-    tags = serializers.SerializerMethodField('get_tags')
-    events = TicketEventSerializer(many=True)
+    tags = serializers.SerializerMethodField()
+    events = serializers.SerializerMethodField()
+
+    def __init__(self, *args, max_events=None, **kwargs):
+        super(TicketSerializer, self).__init__(*args, **kwargs)
+        self.max_events = max_events
 
     def get_tags(self, ticket):
         return [t.tag for t in ticket.tags.all()]
+
+    def get_events(self, ticket):
+        events = ticket.events.all().order_by('-timestamp')
+        if self.max_events is not None:
+            events = events[:self.max_events]
+        return TicketEventSerializer(events, many=True).data
 
     class Meta:
         model = Ticket

@@ -152,6 +152,7 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Redirect url for login_required decorator
 LOGIN_URL = "/shibboleth/login"
 
 REST_FRAMEWORK = {
@@ -159,3 +160,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+# Needed for if debug in templates
+INTERNAL_IPS = ('127.0.0.1',)

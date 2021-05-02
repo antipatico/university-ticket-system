@@ -18,5 +18,5 @@ class RecentActivitiesView(AuthenticatedViewSet):
                      [o.id for o in request.user.organizations.all()] +
                      [o.id for o in request.user.administered_organizations.all()])
         tickets = Ticket.objects.filter(Q(owner_id__in=owners) | Q(subscribers__in=[request.user])).order_by("-ts_last_modified")[:3]
-        serializer = TicketSerializer(tickets, many=True)
+        serializer = TicketSerializer(tickets, max_events=3, many=True)
         return Response(serializer.data)

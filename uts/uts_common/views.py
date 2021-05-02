@@ -5,7 +5,9 @@ from uts_common.decorators import next_redirect
 
 
 def index(request):
-    return render(request, "uts/index.html")
+    if request.user.is_authenticated:
+        return render(request, "uts/index.html")
+    return render(request, "uts/welcome.html")
 
 
 @next_redirect()
