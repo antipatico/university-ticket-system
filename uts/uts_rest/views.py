@@ -4,10 +4,15 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from uts_common.models import *
 from uts_rest.serializers import TicketSerializer
+from rest_framework.permissions import IsAuthenticated
+
+
+class AuthenticatedViewSet(ViewSet):
+    permission_classes = [IsAuthenticated]
 
 
 # Get the 3 most recent tickets the user "interacted with"
-class RecentActivitiesView(ViewSet):
+class RecentActivitiesView(AuthenticatedViewSet):
     def list(self, request):
         owners = set([request.user.individual.id] +
                      [o.id for o in request.user.organizations.all()] +

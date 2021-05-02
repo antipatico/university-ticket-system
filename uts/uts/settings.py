@@ -153,3 +153,9 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "/shibboleth/login"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
