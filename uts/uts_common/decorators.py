@@ -10,7 +10,7 @@ def next_redirect(default_path="uts_common:index", allow_external_redirects=Fals
                 return result
             if "next" in request.GET:
                 if allow_external_redirects:
-                    return redirect(next)
+                    return redirect(request.GET["next"])
                 try:
                     match = resolve(request.GET["next"])
                     return redirect(match.view_name)
