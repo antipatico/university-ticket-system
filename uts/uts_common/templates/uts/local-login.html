@@ -1,1 +1,17 @@
 {% extends "uts/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-4 order-md-2">
+      <p><h4>Local User Login</h4></p>
+        {% crispy form %}
+    </div>
+    <div class="col-md-8 order-md-1">
+      <p></p><h4>Wait what?!</h4></p>
+      <p>This page is used mostly for development purposes.</p>
+      <p>If you ended up here by mistake and you don't have any credentials, please click on the big blue
+        <strong>Login</strong> button up left, or click <a href="{% url 'uts_shibboleth:login' %}">here</a>.</p>
+    </div>
+  </div>
+{% endblock %}
