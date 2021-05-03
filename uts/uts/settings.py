@@ -48,7 +48,9 @@ INSTALLED_APPS = [
 
     'django_apscheduler',
     'polymorphic',
-    'rest_framework'
+    'rest_framework',
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -163,3 +165,9 @@ REST_FRAMEWORK = {
 
 # Needed for if debug in templates
 INTERNAL_IPS = ('127.0.0.1',)
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+CRISPY_FAIL_SILENTLY = not DEBUG
