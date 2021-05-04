@@ -1,24 +1,37 @@
 
-function interval(f,delay) {
+function interval(f, delay) {
     f();
     return setInterval(f, delay);
 }
 
 const TicketsApp = {
-    delimiters: ['$%','%$'],
+    delimiters: ['$%', '%$'],
     data() {
         return {
             openedTicket: null,
             recentTickets: null,
+            ownedTickets: null
         }
     },
     mounted() {
-        this.recentTicketsTimer = interval(this.getRecentTickets, 60*1000);
+        this.recentTicketsTimer = interval(this.getRecentTickets, 20 * 1000);
+        this.ownedTicketsTimer = interval(this.getOwnedTickets, 5 * 60 * 1000);
     },
     methods: {
+        openTicketDetails(ticketId) {
+            this.openedTicket = ticketId;
+        },
+        closeTicketDetails() {
+            this.openedTicket = null;
+        },
         getRecentTickets() {
             $.getJSON("/api/v1/recentactivities/", (data) => {
                 this.recentTickets = data;
+            });
+        },
+        getOwnedTickets() {
+            $.getJSON("/api/v1/recentactivities/", (data) => {
+                this.ownedTickets = data;
             });
         },
         getIconClass(status) {
@@ -56,6 +69,9 @@ const TicketsApp = {
                 case "ANSWER":
                     return "ha risposto"
             }
+        },
+        dateToString(date) {
+            return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
         }
     }
 }
