@@ -35,4 +35,4 @@ def local_login(request):
 
 @login_required
 def ticket_details(request, pk):
-    return render(request, "uts/ticket-details.html", context={"ticketId": pk})
+    return render(request, "uts/ticket-details.html", context={"ticket_id": pk})

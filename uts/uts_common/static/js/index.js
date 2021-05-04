@@ -1,9 +1,3 @@
-
-function interval(f, delay) {
-    f();
-    return setInterval(f, delay);
-}
-
 const TicketsApp = {
     delimiters: ['$%', '%$'],
     data() {
@@ -13,61 +7,31 @@ const TicketsApp = {
         }
     },
     mounted() {
-        this.recentTicketsTimer = interval(this.getRecentTickets, 20 * 1000);
-        this.ownedTicketsTimer = interval(this.getOwnedTickets, 5 * 60 * 1000);
+        this.recentTicketsTimer = QACommon.interval(this.getRecentTickets, 20 * 1000);
+        this.ownedTicketsTimer = QACommon.interval(this.getOwnedTickets, 5 * 60 * 1000);
     },
     methods: {
         openTicketDetails(ticketId) {
-            window.location.href = "/ticket/" + ticketId
+            window.location.href = TICKET_DETAILS_URL + ticketId
         },
         getRecentTickets() {
-            $.getJSON("/api/v1/recentactivities/", (data) => {
+            $.getJSON(API_RECENT_ACTIVITIES_URL, (data) => {
                 this.recentTickets = data;
             });
         },
         getOwnedTickets() {
-            $.getJSON("/api/v1/tickets/", (data) => {
+            $.getJSON(API_TICKETS_URL, (data) => {
                 this.ownedTickets = data;
             });
         },
         getIconClass(status) {
-            switch (status) {
-                case "OPEN":
-                    return "bi-envelope-open"
-                case "CLOSED":
-                    return "bi-envelope"
-                case "DUPLICATE":
-                    return "bi-intersect"
-                case "ESCALATION":
-                    return "bi-file-earmark-person"
-                case "NOTE":
-                    return "bi-vector-pen"
-                case "INFO_NEEDED":
-                    return "bi-info-circle"
-                case "ANSWER":
-                    return "bi-award"
-            }
+            return QACommon.getIconClass(status);
         },
         getEventMessage(status) {
-            switch (status) {
-                case "OPEN":
-                    return "ha aperto il ticket"
-                case "CLOSED":
-                    return "ha chiuso il ticket"
-                case "DUPLICATE":
-                    return "ha marcato il ticket come duplicato"
-                case "ESCALATION":
-                    return "ha passato la proprietà del ticket"
-                case "NOTE":
-                    return "ha aggiunto una nota"
-                case "INFO_NEEDED":
-                    return "ha richiesto informazioni aggiuntive"
-                case "ANSWER":
-                    return "ha risposto"
-            }
+            return QACommon.getEventMessage(status);
         },
         dateToString(date) {
-            return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+            return QACommon.dateToString(date);
         }
     }
 }

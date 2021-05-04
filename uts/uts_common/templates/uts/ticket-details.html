@@ -16,9 +16,6 @@
   </div>
 </div>
 {% endblock %}
-{% block customscripts %}
-<script type="text/javascript">
-  const TICKET_ID = {{ ticketId }};
-</script>
+{% block pagescripts %}
 <script src="{% static 'js/ticket.js' %}"></script>
 {% endblock %}

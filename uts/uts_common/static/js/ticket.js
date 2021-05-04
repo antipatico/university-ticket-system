@@ -6,49 +6,19 @@ const TicketsApp = {
         }
     },
     mounted() {
-        $.getJSON("/api/v1/tickets/" + TICKET_ID + "/", (data) => {
+        $.getJSON(API_TICKETS_URL + TICKET_ID + "/", (data) => {
             this.ticket = data;
         });
     },
     methods: {
         getIconClass(status) {
-            switch (status) {
-                case "OPEN":
-                    return "bi-envelope-open"
-                case "CLOSED":
-                    return "bi-envelope"
-                case "DUPLICATE":
-                    return "bi-intersect"
-                case "ESCALATION":
-                    return "bi-file-earmark-person"
-                case "NOTE":
-                    return "bi-vector-pen"
-                case "INFO_NEEDED":
-                    return "bi-info-circle"
-                case "ANSWER":
-                    return "bi-award"
-            }
+            return QACommon.getIconClass(status);
         },
         getEventMessage(status) {
-            switch (status) {
-                case "OPEN":
-                    return "ha aperto il ticket"
-                case "CLOSED":
-                    return "ha chiuso il ticket"
-                case "DUPLICATE":
-                    return "ha marcato il ticket come duplicato"
-                case "ESCALATION":
-                    return "ha passato la proprietà del ticket"
-                case "NOTE":
-                    return "ha aggiunto una nota"
-                case "INFO_NEEDED":
-                    return "ha richiesto informazioni aggiuntive"
-                case "ANSWER":
-                    return "ha risposto"
-            }
+            return QACommon.getEventMessage(status);
         },
         dateToString(date) {
-            return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+            return QACommon.dateToString(date);
         }
     }
 }
