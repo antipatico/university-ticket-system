@@ -30,7 +30,7 @@ const TicketsApp = {
             });
         },
         getOwnedTickets() {
-            $.getJSON("/api/v1/recentactivities/", (data) => {
+            $.getJSON("/api/v1/tickets/", (data) => {
                 this.ownedTickets = data;
             });
         },
