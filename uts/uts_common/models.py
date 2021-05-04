@@ -57,6 +57,7 @@ class Ticket(models.Model):
     ts_last_modified = models.DateTimeField(auto_now=True)
     ts_closed = models.DateTimeField(null=True, blank=True)
 
+    @property
     def is_closed(self):
         return self.status == TicketStatus.CLOSED
 

@@ -32,10 +32,10 @@
     {% if user.is_authenticated %}
       <div class="dropdown text-end">
         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{% static 'images/default-avatar.png' %}" alt="{{ user.first_name }}" class="rounded-circle border" width="32" height="32">
+          <img src="{% static 'images/default-avatar.png' %}" alt="{{ user.full_name }}" class="rounded-circle border" width="32" height="32">
         </a>
         <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-          <li><span class="dropdown-item">Signed in as <strong>{{ user.first_name }} {{ user.last_name }}</strong></span></li>
+          <li><span class="dropdown-item">Signed in as <strong>{{ user.full_name }}</strong></span></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#">New ticket...</a></li>
           <li><a class="dropdown-item" href="#">My organizations</a></li>

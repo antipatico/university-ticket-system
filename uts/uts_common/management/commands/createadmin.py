@@ -13,8 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             user = User.objects.create_user('admin', 'admin@localhost', 'admin', is_staff=True, is_superuser=True)
-            user.first_name = "admin"
-            user.last_name = "admin"
+            user.first_name = "Administrator"
             user.save()
         except IntegrityError:
             print("ERROR: admin account already existing.")
