@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ['django_extensions']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -171,3 +174,4 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 CRISPY_FAIL_SILENTLY = not DEBUG
+
