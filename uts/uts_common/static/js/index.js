@@ -8,7 +8,6 @@ const TicketsApp = {
     delimiters: ['$%', '%$'],
     data() {
         return {
-            openedTicket: null,
             recentTickets: null,
             ownedTickets: null
         }
@@ -19,10 +18,7 @@ const TicketsApp = {
     },
     methods: {
         openTicketDetails(ticketId) {
-            this.openedTicket = ticketId;
-        },
-        closeTicketDetails() {
-            this.openedTicket = null;
+            window.location.href = "/tickets/" + ticketId
         },
         getRecentTickets() {
             $.getJSON("/api/v1/recentactivities/", (data) => {
