@@ -14,13 +14,7 @@ class TicketStatus(models.TextChoices):
 
 
 class Owner(PolymorphicModel):
-    @property
-    def name(self):
-        return f"{self}"
-
-    @property
-    def type(self):
-        return "organization" if type(self) is Organization else "individual"
+    pass
 
 
 class Individual(Owner):
@@ -86,4 +80,4 @@ class Profile(models.Model):
     email_notifications = models.BooleanField(default=True)
 
 
-User.full_name = property(lambda u: f"{u.username}" if not u.first_name else (f"{u.fist_name}" if not u.last_name else f"{u.first_name} {u.last_name}"))
+User.full_name = property(lambda u: f"{u.username}" if not u.first_name else (f"{u.first_name}" if not u.last_name else f"{u.first_name} {u.last_name}"))

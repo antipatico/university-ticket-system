@@ -15,7 +15,7 @@ class AuthenticatedViewSet(ViewSet):
 class RecentActivitiesView(AuthenticatedViewSet):
     def list(self, request):
         tickets = Ticket.objects.filter(
-            Q(owner_id=request.user.individual.id) | Q(subscribers__in=[request.user])).order_by(
+            Q(owner_id=request.user.individual.id) | Q(subscribers=request.user)).distinct().order_by(
             "-ts_last_modified")[:3]
         serializer = TicketSerializer(tickets, max_events=3, list_events=True, many=True)
         return Response(serializer.data)

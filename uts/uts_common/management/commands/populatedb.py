@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             admin = User.objects.create_user('admin', 'admin@localhost', 'admin', is_staff=True, is_superuser=True)
-            admin.first_name = "Adminstrator"
+            admin.first_name = "Administrator"
             admin.save()
 
             for i in range(5):
