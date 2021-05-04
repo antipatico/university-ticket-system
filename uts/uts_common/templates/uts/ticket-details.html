@@ -1,0 +1,24 @@
+{% extends "uts/base.html" %}
+{% load static %}
+{% block content %}
+<div id="ticketsApp">
+  <div class="card">
+    <div style="width: 100%; margin-bottom: 30px;" v-if="ticket == null">
+      <img src="{% static 'images/loading.gif' %}"
+        style="max-width: 50px; margin-left: auto; margin-right: auto; display: block; " />
+    </div>
+    <div  class="card-body" v-else>
+      <h4 class="card-title" style="margin-bottom: 22px;">
+        &nbsp;$% ticket.name %$
+      </h4>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block customscripts %}
+<script type="text/javascript">
+  const TICKET_ID = {{ ticketId }};
+</script>
+<script src="{% static 'js/ticket.js' %}"></script>
+{% endblock %}
