@@ -26,7 +26,7 @@ class Individual(Owner):
 
 class Organization(Owner):
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="administered_organizations")
-    members = models.ManyToManyField(User, related_name="organizations")
+    members = models.ManyToManyField(User, related_name="organizations", blank=True)
     name = models.TextField(unique=True)
 
     def __str__(self):
@@ -76,3 +76,14 @@ class Notification(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_notifications = models.BooleanField(default=True)
+
+
+def get_full_name(user):
+    if user.first_name is not None:
+        if user.last_name is not None:
+            return f"{user.first_name} {user.last_name}"
+        return f"{user.fist_name}"
+    return f"{user.username}"
+
+
+User.full_name = property(get_full_name)
