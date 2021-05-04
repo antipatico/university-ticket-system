@@ -23,14 +23,14 @@ class RecentActivitiesView(AuthenticatedViewSet):
 
 class SubscribedTicketsView(AuthenticatedViewSet):
     def list(self, request):
-        tickets = Ticket.objects.filter(subscribers=request.user).order_by("-ts_open")
+        tickets = Ticket.objects.filter(subscribers=request.user).order_by("ts_closed", "-ts_open")
         serializer = TicketSerializer(tickets, many=True)
         return Response(serializer.data)
 
 
 class TicketsView(AuthenticatedViewSet):
     def list(self, request):
-        tickets = Ticket.objects.filter(owner_id=request.user.individual.id).order_by("-ts_open")
+        tickets = Ticket.objects.filter(owner_id=request.user.individual.id).order_by("ts_closed", "-ts_open")
         serializer = TicketSerializer(tickets, many=True)
         return Response(serializer.data)
 
