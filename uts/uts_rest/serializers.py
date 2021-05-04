@@ -3,15 +3,6 @@ from uts_common.models import *
 
 
 class OwnerSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    type = serializers.SerializerMethodField()
-
-    def get_name(self, owner):
-        return f"{owner}"
-
-    def get_type(self, owner):
-        return "organization" if type(owner) is Organization else "individual"
-
     class Meta:
         model = Owner
         read_only_fields = fields = ['id', 'name', 'type']
@@ -56,7 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        read_only_fields = fields = ['id', 'username', 'email', 'full_name' ]
+        read_only_fields = fields = ['id', 'username', 'email', 'full_name']
 
 
 class OrganizationSerializer(serializers.ModelSerializer):

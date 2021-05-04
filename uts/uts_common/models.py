@@ -14,7 +14,13 @@ class TicketStatus(models.TextChoices):
 
 
 class Owner(PolymorphicModel):
-    pass
+    @property
+    def name(self):
+        return f"{self}"
+
+    @property
+    def type(self):
+        return "organization" if type(self) is Organization else "individual"
 
 
 class Individual(Owner):
@@ -56,11 +62,12 @@ class Ticket(models.Model):
 
 
 class TicketEvent(models.Model):
-    owner = models.ForeignKey(Owner, on_delete=models.PROTECT) # Note: this will refer to the old owner in case of Escalation
+    owner = models.ForeignKey(Owner,
+                              on_delete=models.PROTECT)  # Note: this will refer to the old owner in case of Escalation
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.ANSWER)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="events")
     timestamp = models.DateTimeField(auto_now_add=True)
-    attachment = models.FileField(max_length=10*1024*1024, null=True, blank=True)
+    attachment = models.FileField(max_length=10 * 1024 * 1024, null=True, blank=True)
     info = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -78,12 +85,4 @@ class Profile(models.Model):
     email_notifications = models.BooleanField(default=True)
 
 
-def get_full_name(user):
-    if user.first_name is not None:
-        if user.last_name is not None:
-            return f"{user.first_name} {user.last_name}"
-        return f"{user.fist_name}"
-    return f"{user.username}"
-
-
-User.full_name = property(get_full_name)
+User.full_name = property(lambda u: f"{u.username}" if not u.first_name else (f"{u.fist_name}" if not u.last_name else f"{u.first_name} {u.last_name}"))
