@@ -28,19 +28,41 @@
     </div>
   </div>
   <br>
-  <div class="card">
-    <div class="card-body">
-      <h4 class="card-title" style="margin-bottom: 22px;">I Miei Ticket</h4>
-      <div style="width: 100%; margin-bottom: 30px;" v-if="ownedTickets == null">
-        <img src="{% static 'images/loading.gif' %}"
-          style="max-width: 50px; margin-left: auto; margin-right: auto; display: block; " />
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title" style="margin-bottom: 22px;">I Miei Ticket</h4>
+          <div style="width: 100%; margin-bottom: 30px;" v-if="ownedTickets == null">
+            <img src="{% static 'images/loading.gif' %}"
+              style="max-width: 50px; margin-left: auto; margin-right: auto; display: block; " />
+          </div>
+          <div v-else>
+            <ul class="list-group list-group-flush">
+              <li style="cursor: pointer;" class="list-group-item bi" :class="getIconClass(ticket.status)"
+                v-on:click="openTicketDetails(ticket.id)" v-for="ticket in ownedTickets">
+                &nbsp;$% ticket.name %$</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div v-else>
-        <ul class="list-group list-group-flush">
-          <li style="cursor: pointer;" class="list-group-item bi" :class="getIconClass(ticket.status)"
-            v-on:click="openTicketDetails(ticket.id)" v-for="ticket in ownedTickets">
-            &nbsp;$% ticket.name %$</li>
-        </ul>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title" style="margin-bottom: 22px;">I Ticket che Seguo</h4>
+          <div style="width: 100%; margin-bottom: 30px;" v-if="subscribedTickets == null">
+            <img src="{% static 'images/loading.gif' %}"
+              style="max-width: 50px; margin-left: auto; margin-right: auto; display: block; " />
+          </div>
+          <div v-else>
+            <ul class="list-group list-group-flush">
+              <li style="cursor: pointer;" class="list-group-item bi" :class="getIconClass(ticket.status)"
+                v-on:click="openTicketDetails(ticket.id)" v-for="ticket in subscribedTickets ">
+                &nbsp;$% ticket.name %$</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
