@@ -41,6 +41,40 @@ const QACommon = {
     },
     dateToString(date) {
         return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+    },
+    dateDiffFromNow(date) {
+        let delta = new Date() - new Date(date); // difference between now and  the date passed in milliseconds
+        if (delta >= 6.307e10) { // delta >= 2 years
+            return `${Math.trunc(delta / 3.154e10)} anni fa`;
+        }
+        if (delta >= 3.154e10) { // delta >= 1 year
+            return "un anno fa";
+        }
+        if (delta >= 5.256e9) { // delta >= 2 months
+            return `${Math.trunc(delta / 2.628e9)} mesi fa`;
+        }
+        if (delta >= 2.628e9) { // delta >= 1 month
+            return "un mese fa";
+        }
+        if (delta >= 1.21e9) { // delta >= 2 weeks
+            return `${Math.trunc(delta / 6.048e8)} settimane fa`
+        }
+        if (delta >= 6.048e8) { // delta >= 1 week
+            return "una settimana fa";
+        }
+        if (delta >= 1.728e8) { // delta >= 2 days
+            return `${Math.trunc(delta / 8.64e7)} giorni fa`;
+        }
+        if (delta >= 8.64e7) { // delta >= 1 day
+            return "un giorno fa";
+        }
+        if (delta >= 120000) { // delta >= 2 minutes
+            return `${Math.trunc(delta / 60000)} minuti fa`;
+        }
+        if (delta >= 60000) { // delta >= 1 minute
+            return "un minuto fa";
+        }
+        return "qualche secondo fa";
     }
 }
 

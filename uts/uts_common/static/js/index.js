@@ -50,48 +50,7 @@ app.mixin({
             return QACommon.dateToString(date);
         },
         dateDiffFromNow(date) {
-            date = new Date(date);
-            let now = new Date();
-            let secondsDiff = (now - date) / 1000;
-            if (secondsDiff < 10) {
-                return "ora";
-            } else if (secondsDiff < 60) {
-                return `${secondsDiff} secondi fa`;
-            } else {
-                let minutesDiff = secondsDiff / 60;
-                if (minutesDiff < 2) {
-                    return "un minuto fa";
-                } else if (minutesDiff < 60) {
-                    return `${minutesDiff} minuti fa`;
-                } else {
-                    let hoursDiff = minutesDiff / 60;
-                    if (hoursDiff < 2) {
-                        return "un'ora fa";
-                    } else if (hoursDiff < 24) {
-                        return `${hoursDiff} ore fa`;
-                    } else {
-                        let daysDiff = hoursDiff / 24;
-                        if (daysDiff < 2) {
-                            return "un giorno fa";
-                        } else if (daysDiff < 30) {
-                            return `${daysDiff} giorni fa`;
-                        } else {
-                            let monthsDiff = daysDiff / 30;
-                            if (monthsDiff < 2) {
-                                return "un mese fa";
-                            } else if (monthsDiff < 12) {
-                                return `${monthsDiff} mesi fa`
-                            } else {
-                                let yearsDiff = monthsDiff / 12;
-                                if (monthsDiff < 2) {
-                                    return "un anno fa";
-                                }
-                                return `${yearsDiff} anni fa`;
-                            }
-                        }
-                    }
-                }
-            }
+            return QACommon.dateDiffFromNow(date);
         },
         openTicketDetails(ticketId) {
             window.location.href = TICKET_DETAILS_URL + ticketId
