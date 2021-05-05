@@ -1,0 +1,16 @@
+/* Hide asterisks from Crispy Forms */
+.asteriskField {
+    display: none;
+}
+
+/* Style of the loading gif */
+.loadingGif {
+    max-width: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.click {
+    cursor: pointer;
+}

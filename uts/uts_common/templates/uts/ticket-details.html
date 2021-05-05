@@ -3,12 +3,11 @@
 {% block content %}
 <div id="ticketsApp">
   <div class="card">
-    <div style="width: 100%; margin-bottom: 30px;" v-if="ticket == null">
-      <img src="{% static 'images/loading.gif' %}"
-        style="max-width: 50px; margin-left: auto; margin-right: auto; display: block; " />
+    <div class="w-100 mb-3" v-if="ticket == null">
+      <img src="{% static 'images/loading.gif' %}" class="loadingGif" />
     </div>
     <div  class="card-body" v-else>
-      <h4 class="card-title" style="margin-bottom: 22px;">
+      <h4 class="card-title mb-3">
         &nbsp;$% ticket.name %$
       </h4>
 
