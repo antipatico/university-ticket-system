@@ -7,6 +7,9 @@ const TicketsApp = {
             subscribedTickets: null,
         }
     },
+    created() {
+        $("#ticketsApp").show();
+    },
     mounted() {
         this.recentTicketsTimer = QACommon.interval(this.getRecentTickets, 20 * 1000);
         this.ownedTicketsTimer = QACommon.interval(this.getOwnedTickets, 5 * 60 * 1000);

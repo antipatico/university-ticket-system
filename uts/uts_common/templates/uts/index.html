@@ -1,7 +1,9 @@
 {% extends "uts/base.html" %}
 {% load static %}
 {% block content %}
-<div id="ticketsApp">
+<!-- The app's hidden style is inline because if not, there could be a frame in which the app is not loaded, the css
+     neither and the $% magic strings are visible. The app's div will be shown once Vue has been loaded. -->
+<div id="ticketsApp" style="display:none">
   <div class="card">
     <div class="card-body">
       <h4 class="card-title mb-3">Attività Recenti</h4>
