@@ -11,11 +11,7 @@ def next_redirect(default_path="uts_common:index", allow_external_redirects=Fals
             if "next" in request.GET:
                 if allow_external_redirects:
                     return redirect(request.GET["next"])
-                try:
-                    match = resolve(request.GET["next"])
-                    return redirect(match.view_name)
-                except Resolver404:
-                    pass
+                return redirect(f"{request.scheme}://{request.get_host()}{request.GET['next']}")
             return redirect(default_path)
         return inner
     return wrapper
