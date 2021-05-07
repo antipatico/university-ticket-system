@@ -55,6 +55,9 @@ class Ticket(models.Model):
     def is_closed(self):
         return self.status == TicketStatus.CLOSED
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class TicketEvent(models.Model):
     owner = models.ForeignKey(Owner,
@@ -67,6 +70,7 @@ class TicketEvent(models.Model):
 
     class Meta:
         ordering = ["timestamp"]
+
 
 
 class Notification(models.Model):

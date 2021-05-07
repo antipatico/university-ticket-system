@@ -11,15 +11,7 @@ const TicketsApp = {
         });
     },
     methods: {
-        getIconClass(status) {
-            return QACommon.getIconClass(status);
-        },
-        getEventMessage(status) {
-            return QACommon.getEventMessage(status);
-        },
-        dateToString(date) {
-            return QACommon.dateToString(date);
-        }
+        f() { return QACommon }
     }
 }
 Vue.createApp(TicketsApp).mount('#ticketsApp')

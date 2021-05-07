@@ -25,10 +25,18 @@ class TicketEventSerializer(serializers.ModelSerializer):
         read_only_fields = fields = ['id', 'owner', 'status', 'timestamp', 'info']
 
 
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        read_only_fields = fields = ['id', 'username', 'email', 'full_name']
+
+
 class TicketSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
     tags = serializers.SerializerMethodField()
     events = serializers.SerializerMethodField()
+    subscribers = UserSerializer(many=True)
 
     def __init__(self, *args, max_events=None, list_events=False, **kwargs):
         super(TicketSerializer, self).__init__(*args, **kwargs)
@@ -49,14 +57,7 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         read_only_fields = fields = ['id', 'owner', 'status', 'name', 'description', 'events', 'tags', 'ts_open',
-                                     'ts_last_modified', 'ts_closed', 'is_closed']
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        read_only_fields = fields = ['id', 'username', 'email', 'full_name']
+                                     'ts_last_modified', 'ts_closed', 'is_closed',  'subscribers']
 
 
 class OrganizationSerializer(serializers.ModelSerializer):

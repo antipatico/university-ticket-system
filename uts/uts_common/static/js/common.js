@@ -39,6 +39,24 @@ const QACommon = {
                 return "ha risposto"
         }
     },
+    getStatusName(status) {
+        switch (status) {
+            case "OPEN":
+                return "Aperto"
+            case "CLOSED":
+                return "Chiuso"
+            case "DUPLICATE":
+                return "Duplicato"
+            case "ESCALATION":
+                return "Trasferito"
+            case "NOTE":
+                return "Annotato"
+            case "INFO_NEEDED":
+                return "Incompleto"
+            case "ANSWER":
+                return "Risposto"
+        }
+    },
     dateToString(date) {
         return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
     },

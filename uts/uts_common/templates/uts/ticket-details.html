@@ -7,10 +7,53 @@
       <img src="{% static 'images/loading.gif' %}" class="loadingGif" />
     </div>
     <div  class="card-body" v-else>
-      <h4 class="card-title mb-3">
-        &nbsp;$% ticket.name %$
-      </h4>
-
+      <h3 class="card-title mb-1">
+          $% ticket.name %$ <span class="text-muted small">#$% ticket.id %$</span>
+      </h3>
+      <h6 class="card-subtitle mb-2 bi" :class="[f().getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
+        &nbsp;$% f().getStatusName(ticket.status) %$</h6>
+      <div class="row">
+        <div class="col-12">
+          <span class="small">$% ticket.owner.name %$ ha aperto il ticket $% f().dateDiffFromNow(ticket.ts_open) %$</span>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-lg-9 col-md-12 mb-3">
+          <div class="card mb-3" v-for="event in ticket.events.slice().reverse()">
+            <div  class="card-body" >
+              <div class="row">
+                <div class="col-12 bi"  :class="f().getIconClass(event.status)">
+                  &nbsp;$% event.owner.name %$ $% f().getEventMessage(event.status) %$ $% f().dateDiffFromNow(event.timestamp) %$
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 mb-3">
+          <div class="mb-4">
+            <h5>Tags</h5>
+            <div v-if="ticket.tags.length < 1">
+              <span class="text-muted small">&nbsp;Nessun tag</span>
+            </div>
+            <ul>
+              <li v-for="tag in ticket.tags">$% tag %$</li>
+            </ul>
+          </div>
+          <div class="mb-4">
+            <button class="btn btn-success w-100">Segui</button>
+          </div>
+          <div class="mb-4">
+            <h5>Seguito da</h5>
+            <div v-if="ticket.subscribers.length < 1">
+              <span class="text-muted small">&nbsp;Nessuno</span>
+            </div>
+            <ul>
+              <li v-for="subscriber in ticket.subscribers">$% subscriber.full_name %$</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
