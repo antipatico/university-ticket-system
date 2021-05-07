@@ -1,16 +1,31 @@
 const TicketListItem = {
     props: {
-        ticket: Object
+        ticket: Object,
+        showOwner: Boolean,
     },
     template: `
 <li class="list-group-item">
-  <div class="row">
-    <div class="col-md-8">
-          <span v-if="ticket.is_closed" class="click bi text-muted" :class="getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<del>{{ticket.name}}</del></span>
-          <span v-else class="click bi" :class="getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<strong>{{ticket.name}}</strong></span>
-      </div>
-    <div class="col-md-4">
-      <small>Aperto {{dateDiffFromNow(ticket.ts_open)}}</small>
+  <div class="row" v-if="showOwner">
+    <div class="col-xl-4 col-lg-12">
+      <span v-if="ticket.is_closed" class="click bi text-muted" :class="getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<del>{{ticket.name}}</del></span>
+      <span v-else class="click bi" :class="getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<strong>{{ticket.name}}</strong></span>
+    </div>
+    <div class="col-xl-4 col-lg-7 col-md-12">
+      <span>{{ticket.owner.name}}</span>
+    </div>
+    <div class="col-xl-4 col-lg-5 col-md-12">
+       <small v-if="ticket.is_closed" class="text-muted">Chiuso {{dateDiffFromNow(ticket.ts_closed)}}</small>
+       <small v-else>Aperto {{dateDiffFromNow(ticket.ts_open)}}</small>
+    </div>
+  </div>
+  <div class="row" v-else>
+    <div class="col-xl-8 col-lg-12">
+      <span v-if="ticket.is_closed" class="click bi text-muted" :class="getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<del>{{ticket.name}}</del></span>
+      <span v-else class="click bi" :class="getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<strong>{{ticket.name}}</strong></span>
+    </div>
+    <div class="col-xl-4 col-lg-12">
+       <small v-if="ticket.is_closed" class="text-muted">Chiuso {{dateDiffFromNow(ticket.ts_closed)}}</small>
+       <small v-else>Aperto {{dateDiffFromNow(ticket.ts_open)}}</small>
     </div>
   </div>
 </li>`,

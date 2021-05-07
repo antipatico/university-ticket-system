@@ -1,7 +1,7 @@
 const TicketsApp = {
     delimiters: ['$%', '%$'],
     components: {
-      'li-ticket': TicketListItem,
+      'ul-tickets': TicketsList,
     },
     data() {
         return {

@@ -17,7 +17,7 @@
               <h5 class="card-title bi click" :class="getIconClass(ticket.status)"
                 v-on:click="openTicketDetails(ticket.id)">
                 &nbsp;$% ticket.name %$</h5>
-              <h6 class="card-subtitle mb-2 text-muted">$% dateToString(new Date(ticket.ts_last_modified)) %$</h6>
+              <h6 class="card-subtitle mb-2 text-muted">$% dateDiffFromNow(ticket.ts_last_modified) %$</h6>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item bi" :class="getIconClass(event.status)" v-for="event in ticket.events">
                   &nbsp;$% event.owner.name + ' ' + getEventMessage(event.status) %$</li>
@@ -30,7 +30,7 @@
   </div>
   <br>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 mb-3">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title mb-3">I Miei Ticket</h4>
@@ -38,14 +38,12 @@
             <img src="{% static 'images/loading.gif' %}" class="loadingGif"/>
           </div>
           <div v-else>
-            <ul class="list-group list-group-flush">
-              <li-ticket :ticket="ticket" v-for="ticket in ownedTickets"></li-ticket>
-            </ul>
+            <ul-tickets :tickets="ownedTickets"></ul-tickets>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mb-3">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title mb-3">I Ticket che Seguo</h4>
@@ -53,9 +51,7 @@
             <img src="{% static 'images/loading.gif' %}" class="loadingGif"/>
           </div>
           <div v-else>
-            <ul class="list-group list-group-flush">
-              <li-ticket :ticket="ticket" v-for="ticket in subscribedTickets"></li-ticket>
-            </ul>
+            <ul-tickets :tickets="subscribedTickets" show-owners></ul-tickets>
           </div>
         </div>
       </div>
@@ -65,5 +61,6 @@
 {% endblock %}
 {% block pagescripts %}
 <script src="{% static 'js/components/li-ticket.js' %}"></script>
+<script src="{% static 'js/components/ul-tickets.js' %}"></script>
 <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}
