@@ -7,6 +7,13 @@ const TicketsApp = {
     },
     mounted() {
         $.getJSON(API_TICKETS_URL + TICKET_ID + "/", (data) => {
+            let owner = data.owner;
+            data.events.forEach((e) => {
+                if(e.status === "ESCALATION") {
+                    e.newOwner = owner;
+                    owner = e.owner;
+                }
+            });
             this.ticket = data;
         });
     },

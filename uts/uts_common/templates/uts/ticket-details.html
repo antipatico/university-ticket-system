@@ -12,11 +12,6 @@
       </h3>
       <h6 class="card-subtitle mb-2 bi" :class="[f().getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
         &nbsp;$% f().getStatusName(ticket.status) %$</h6>
-      <div class="row">
-        <div class="col-12">
-          <span class="small">$% ticket.owner.name %$ ha aperto il ticket $% f().dateDiffFromNow(ticket.ts_open) %$</span>
-        </div>
-      </div>
       <hr/>
       <div class="row">
         <div class="col-lg-9 col-md-12 mb-3">
@@ -26,6 +21,19 @@
                 <div class="col-12 bi"  :class="f().getIconClass(event.status)">
                   &nbsp;$% event.owner.name %$ $% f().getEventMessage(event.status) %$ $% f().dateDiffFromNow(event.timestamp) %$
                 </div>
+              </div>
+              <div class="row" v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
+                <div class="col card mt-3">
+                  <div class="card-body">
+                    $% event.info %$
+                  </div>
+                </div>
+              </div>
+              <div class="row" v-if="event.status === 'DUPLICATE'">
+                <h6 class="small mt-1">&nbsp;Duplicato del ticket <a href="#">#$% event.info %$</a></h6>
+              </div>
+              <div class="row" v-if="event.status === 'ESCALATION'">
+                <h6 class="small mt-1">&nbsp;Il nuovo proprietario è <strong>$% event.newOwner.name %$</strong></h6>
               </div>
             </div>
           </div>
