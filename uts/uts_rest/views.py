@@ -37,8 +37,8 @@ class TicketsView(AuthenticatedViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = Ticket.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = TicketSerializer(user, list_events=True)
+        ticket = get_object_or_404(queryset, pk=pk)
+        serializer = TicketSerializer(ticket, user=request.user, list_events=True)
         return Response(serializer.data)
 
 

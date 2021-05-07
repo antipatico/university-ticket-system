@@ -37,13 +37,18 @@ class TicketSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
     events = serializers.SerializerMethodField()
     subscribers = UserSerializer(many=True)
+    is_owned = serializers.SerializerMethodField()
 
-    def __init__(self, *args, max_events=None, list_events=False, **kwargs):
+    def __init__(self, *args, max_events=None, list_events=False, user=None, **kwargs):
         super(TicketSerializer, self).__init__(*args, **kwargs)
         self.max_events = max_events
         if not list_events:
             self.events = None
             del self.fields["events"]
+        if user is None:
+            self.is_owned = None
+            del self.fields["is_owned"]
+        self.user = user
 
     def get_tags(self, ticket):
         return [t.tag for t in ticket.tags.all()]
@@ -54,10 +59,15 @@ class TicketSerializer(serializers.ModelSerializer):
             events = events[:self.max_events]
         return TicketEventSerializer(events, many=True).data
 
+    def get_is_owned(self, ticket):
+        if type(ticket.owner) is Individual:
+            return self.user.id == ticket.owner.user.id
+        return self.user.id == ticket.owner.admin.id # TODO: all users in a organization are owners
+
     class Meta:
         model = Ticket
         read_only_fields = fields = ['id', 'owner', 'status', 'name', 'description', 'events', 'tags', 'ts_open',
-                                     'ts_last_modified', 'ts_closed', 'is_closed',  'subscribers']
+                                     'ts_last_modified', 'ts_closed', 'is_closed',  'subscribers', 'is_owned']
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
