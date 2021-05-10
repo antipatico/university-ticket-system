@@ -60,7 +60,7 @@ class TicketSerializer(serializers.ModelSerializer):
         return TicketEventSerializer(events, many=True).data
 
     def get_is_owned(self, ticket):
-        return ticket.is_owned_by(self.user)
+        return ticket.is_owned_by(self.user.individual)
 
     class Meta:
         model = Ticket
