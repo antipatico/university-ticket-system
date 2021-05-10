@@ -55,6 +55,19 @@ class Ticket(models.Model):
     def is_closed(self):
         return self.status == TicketStatus.CLOSED
 
+    def is_owned_by(self, owner):
+        if type(owner) is Individual:
+            user = owner.user
+            # Case 1: The ticket is owned by an individual, you need to check if the owner matches
+            if type(self.owner) is Individual:
+                return user.id == self.owner.user.id
+            # Case 2: The ticket is owned by an Organization, you need to check if the owner is a member
+            is_member = user in self.owner.members.all()
+            is_admin = user.id == self.owner.admin.id
+            return is_admin or is_member
+        elif type(self.owner) is Organization:
+            return self.owner.id == owner.id
+
     def __str__(self):
         return f"{self.name}"
 

@@ -60,11 +60,7 @@ class TicketSerializer(serializers.ModelSerializer):
         return TicketEventSerializer(events, many=True).data
 
     def get_is_owned(self, ticket):
-        if type(ticket.owner) is Individual:
-            return self.user.id == ticket.owner.user.id
-        is_member = self.user in ticket.owner.members.all()
-        is_admin = self.user.id == ticket.owner.admin.id
-        return is_admin or is_member
+        return ticket.is_owned_by(self.user)
 
     class Meta:
         model = Ticket
