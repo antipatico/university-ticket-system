@@ -1,72 +1,86 @@
 {% extends "uts/base.html" %}
 {% load static %}
 {% block content %}
-<div id="ticketsApp">
-  <div class="card">
-    <div class="w-100 mb-3" v-if="ticket == null">
-      <img src="{% static 'images/loading.gif' %}" class="loadingGif" />
-    </div>
-    <div  class="card-body" v-else>
-      <h3 class="card-title mb-1">
+  <div id="ticketsApp" style="display:none">
+    <div class="card">
+      <div class="w-100 mb-3" v-if="ticket == null">
+        <img src="{% static 'images/loading.gif' %}" class="loadingGif"/>
+      </div>
+      <div class="card-body" v-else>
+        <h3 class="card-title mb-1">
           $% ticket.name %$ <span class="text-muted small">#$% ticket.id %$</span>
-      </h3>
-      <h6 class="card-subtitle mb-2 bi" :class="[f().getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
-        &nbsp;$% f().getStatusName(ticket.status) %$</h6>
-      <hr/>
-      <div class="row">
-        <div class="col-lg-9 col-md-12 mb-3">
-          <div class="card mb-3" v-for="event in ticket.events.slice().reverse()">
-            <div  class="card-body" >
-              <div class="row">
-                <div class="col-12 bi"  :class="f().getIconClass(event.status)">
-                  &nbsp;$% event.owner.name %$ $% f().getEventMessage(event.status) %$ $% f().dateDiffFromNow(event.timestamp) %$
+        </h3>
+        <h6 class="card-subtitle mb-2 bi" :class="[f().getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
+          &nbsp;$% f().getStatusName(ticket.status) %$</h6>
+        <hr/>
+        <div class="row">
+          <div class="col-lg-9 col-md-12 mb-3">
+            <div class="card mb-3" v-for="event in ticket.events.slice().reverse()">
+              <div class="card-header bi" :class="f().getIconClass(event.status)">
+                &nbsp;$% event.owner.name %$ $% f().getEventMessage(event.status) %$ $%
+                f().dateDiffFromNow(event.timestamp) %$
+              </div>
+              <div class="card-body"
+                   v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
+                $% event.info %$
+              </div>
+              <div class="card-body" v-else-if="event.status === 'DUPLICATE'">
+                <h6 class="small">&nbsp;Duplicato del ticket <a href="#">#$% event.info %$</a></h6>
+              </div>
+              <div class="card-body" v-else-if="event.status === 'ESCALATION'">
+                <h6 class="small">&nbsp;Il nuovo proprietario è <strong>$% event.newOwner.name %$</strong></h6>
+              </div>
+            </div>
+            <div class="card mb-2" v-if="ticket.is_owned || !ticket.is_closed">
+              <div class="card-header bg-secondary text-white">
+                <strong>Aggiungi un'azione</strong>
+              </div>
+              <div class="card-body">
+                <select class="form-select" v-model="action">
+                  <option value="NONE" selected hidden disabled>Seleziona un'azione</option>
+                  <option value="ANSWER" v-if="!ticket.is_closed">Rispondi</option>
+                  <option value="INFO_NEEDED" v-if="!ticket.is_closed">Richiedi Informazioni</option>
+                  <option value="NOTE" v-if="!ticket.is_closed">Aggiungi una nota</option>
+                  <option value="DUPLICATE" v-if="!ticket.is_closed">Segnala come duplicato</option>
+                  <option value="ESCALATION" v-if="ticket.is_owned">Passa di proprietà</option>
+                  <option value="CLOSED" v-if="ticket.is_owned && ticket.is_closed">Apri il ticket</option>
+                  <option value="CLOSED" v-else-if="ticket.is_owned && !ticket.is_closed">Chiudi il ticket</option>
+                </select>
+                <div v-if="action == 'ANSWER' || action == 'INFO_NEEDED' || action == 'NOTE'">
+                  <textarea class="form-control mt-2" rows="3"></textarea>
                 </div>
-              </div>
-              <div class="row" v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
-                <div class="col card mt-3">
-                  <div class="card-body">
-                    $% event.info %$
-                  </div>
-                </div>
-              </div>
-              <div class="row" v-if="event.status === 'DUPLICATE'">
-                <h6 class="small mt-1">&nbsp;Duplicato del ticket <a href="#">#$% event.info %$</a></h6>
-              </div>
-              <div class="row" v-if="event.status === 'ESCALATION'">
-                <h6 class="small mt-1">&nbsp;Il nuovo proprietario è <strong>$% event.newOwner.name %$</strong></h6>
+                <button class="btn btn-success mt-2 w-100" v-if="action != 'NONE'">Invia</button>
               </div>
             </div>
           </div>
-          <div class="card mb-2" v-if="ticket.is_owned || !ticket.is_closed">MAREMMA</div>
-        </div>
-        <div class="col-lg-3 col-md-12 mb-3">
-          <div class="mb-4">
-            <h5>Tags</h5>
-            <div v-if="ticket.tags.length < 1">
-              <span class="text-muted small">&nbsp;Nessun tag</span>
+          <div class="col-lg-3 col-md-12 mb-3">
+            <div class="mb-4">
+              <h5>Tags</h5>
+              <div v-if="ticket.tags.length < 1">
+                <span class="text-muted small">&nbsp;Nessun tag</span>
+              </div>
+              <ul>
+                <li v-for="tag in ticket.tags">$% tag %$</li>
+              </ul>
             </div>
-            <ul>
-              <li v-for="tag in ticket.tags">$% tag %$</li>
-            </ul>
-          </div>
-          <div class="mb-4">
-            <button class="btn btn-success w-100">Segui</button>
-          </div>
-          <div class="mb-4">
-            <h5>Seguito da</h5>
-            <div v-if="ticket.subscribers.length < 1">
-              <span class="text-muted small">&nbsp;Nessuno</span>
+            <div class="mb-4">
+              <button class="btn btn-success w-100">Segui</button>
             </div>
-            <ul>
-              <li v-for="subscriber in ticket.subscribers">$% subscriber.full_name %$</li>
-            </ul>
+            <div class="mb-4">
+              <h5>Seguito da</h5>
+              <div v-if="ticket.subscribers.length < 1">
+                <span class="text-muted small">&nbsp;Nessuno</span>
+              </div>
+              <ul>
+                <li v-for="subscriber in ticket.subscribers">$% subscriber.full_name %$</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 {% endblock %}
 {% block pagescripts %}
-<script src="{% static 'js/ticket.js' %}"></script>
+  <script src="{% static 'js/ticket.js' %}"></script>
 {% endblock %}

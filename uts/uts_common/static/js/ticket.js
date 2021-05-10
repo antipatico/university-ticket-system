@@ -3,6 +3,7 @@ const TicketsApp = {
     data() {
         return {
             ticket: null,
+            action: "NONE",
         }
     },
     mounted() {
@@ -16,6 +17,9 @@ const TicketsApp = {
             });
             this.ticket = data;
         });
+    },
+    created() {
+        $("#ticketsApp").show();
     },
     methods: {
         f() { return QACommon }
