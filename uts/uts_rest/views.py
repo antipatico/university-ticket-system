@@ -2,6 +2,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.viewsets import ViewSet
 
 from uts_rest.serializers import *
@@ -40,6 +41,20 @@ class TicketsView(AuthenticatedViewSet):
         ticket = get_object_or_404(queryset, pk=pk)
         serializer = TicketSerializer(ticket, user=request.user, list_events=True)
         return Response(serializer.data)
+
+    def partial_update(self, request, pk=None):
+        queryset = Ticket.objects.all()
+        ticket = get_object_or_404(queryset, pk=pk)
+        subscription = request.data.get("is_subscribed", None)
+        if subscription is not None and type(subscription) is bool:
+            if subscription:
+                ticket.subscribers.add(request.user)
+            else:
+                ticket.subscribers.remove(request.user)
+            ticket.save()
+            serializer = TicketSerializer(ticket, user=request.user)
+            return Response(serializer.data)
+        return Response({"error": "invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OrganizationsView(AuthenticatedViewSet):

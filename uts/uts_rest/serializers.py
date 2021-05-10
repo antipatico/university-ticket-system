@@ -38,6 +38,7 @@ class TicketSerializer(serializers.ModelSerializer):
     events = serializers.SerializerMethodField()
     subscribers = UserSerializer(many=True)
     is_owned = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField()
 
     def __init__(self, *args, max_events=None, list_events=False, user=None, **kwargs):
         super(TicketSerializer, self).__init__(*args, **kwargs)
@@ -47,7 +48,9 @@ class TicketSerializer(serializers.ModelSerializer):
             del self.fields["events"]
         if user is None:
             self.is_owned = None
+            self.is_subscribed = None
             del self.fields["is_owned"]
+            del self.fields["is_subscribed"]
         self.user = user
 
     def get_tags(self, ticket):
@@ -62,10 +65,14 @@ class TicketSerializer(serializers.ModelSerializer):
     def get_is_owned(self, ticket):
         return ticket.is_owned_by(self.user.individual)
 
+    def get_is_subscribed(self, ticket):
+        return self.user in ticket.subscribers.all()
+
     class Meta:
         model = Ticket
         read_only_fields = fields = ['id', 'owner', 'status', 'name', 'description', 'events', 'tags', 'ts_open',
-                                     'ts_last_modified', 'ts_closed', 'is_closed',  'subscribers', 'is_owned']
+                                     'ts_last_modified', 'ts_closed', 'is_closed', 'is_owned', 'is_subscribed',
+                                     'subscribers']
 
 
 class OrganizationSerializer(serializers.ModelSerializer):

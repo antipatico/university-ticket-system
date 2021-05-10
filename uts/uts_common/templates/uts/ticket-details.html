@@ -42,12 +42,24 @@
                   <option value="INFO_NEEDED" v-if="!ticket.is_closed">Richiedi Informazioni</option>
                   <option value="NOTE" v-if="!ticket.is_closed">Aggiungi una nota</option>
                   <option value="DUPLICATE" v-if="!ticket.is_closed">Segnala come duplicato</option>
-                  <option value="ESCALATION" v-if="ticket.is_owned">Passa di proprietà</option>
+                  <option value="ESCALATION" v-if="ticket.is_owned">Trasferisci la proprietà</option>
                   <option value="CLOSED" v-if="ticket.is_owned && ticket.is_closed">Apri il ticket</option>
                   <option value="CLOSED" v-else-if="ticket.is_owned && !ticket.is_closed">Chiudi il ticket</option>
                 </select>
                 <div v-if="action == 'ANSWER' || action == 'INFO_NEEDED' || action == 'NOTE'">
                   <textarea class="form-control mt-2" rows="3"></textarea>
+                </div>
+                <div v-if="action == 'ESCALATION'">
+                  <div class="form-group mt-2">
+                    <label for="escalation-email">Indirizzo email del nuovo proprietario:</label>
+                    <input type="email" class="form-control" id="escalation-email" placeholder="mario.rossi@unimore.it">
+                  </div>
+                </div>
+                <div v-if="action == 'DUPLICATE'">
+                  <div class="form-group mt-2">
+                    <label for="duplicate-url">URL del ticket duplicato:</label>
+                    <input type="url" class="form-control" id="duplicate-url" placeholder="https://qaticket.ing.unimore.it/ticket/1337">
+                  </div>
                 </div>
                 <button class="btn btn-success mt-2 w-100" v-if="action != 'NONE'">Invia</button>
               </div>
@@ -64,7 +76,7 @@
               </ul>
             </div>
             <div class="mb-4">
-              <button class="btn btn-success w-100">Segui</button>
+              <button class="btn w-100" :class="ticket.is_subscribed?'btn-danger':'btn-success'" >$% ticket.is_subscribed?'Smetti di seguire':'Segui' %$</button>
             </div>
             <div class="mb-4">
               <h5>Seguito da</h5>
