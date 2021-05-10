@@ -87,9 +87,9 @@ const QACommon = {
             return "un giorno fa";
         }
         if (delta >= 7.2e6) { // delta >= 2 hours
-            return `${Math.trunc(delta/3.6e5)} ore fa`;
+            return `${Math.trunc(delta/3.6e6)} ore fa`;
         }
-        if (delta >= 3.6e5) { // delta >= 1 hour
+        if (delta >= 3.6e6) { // delta >= 1 hour
             return "un'ora fa";
         }
         if (delta >= 120000) { // delta >= 2 minutes
