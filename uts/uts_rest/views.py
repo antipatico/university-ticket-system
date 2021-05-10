@@ -52,7 +52,7 @@ class TicketsView(AuthenticatedViewSet):
             else:
                 ticket.subscribers.remove(request.user)
             ticket.save()
-            serializer = TicketSerializer(ticket, user=request.user)
+            serializer = TicketSerializer(ticket, user=request.user, list_events=True)
             return Response(serializer.data)
         return Response({"error": "invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 

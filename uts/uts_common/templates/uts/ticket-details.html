@@ -76,7 +76,9 @@
               </ul>
             </div>
             <div class="mb-4">
-              <button class="btn w-100" :class="ticket.is_subscribed?'btn-danger':'btn-success'" >$% ticket.is_subscribed?'Smetti di seguire':'Segui' %$</button>
+              <button class="btn w-100"
+                 :class="ticket.is_subscribed?'btn-danger':'btn-success'"
+                 v-on:click="toggleSubscription">$% ticket.is_subscribed?'Smetti di seguire':'Segui' %$</button>
             </div>
             <div class="mb-4">
               <h5>Seguito da</h5>
@@ -92,7 +94,12 @@
       </div>
     </div>
   </div>
+
 {% endblock %}
 {% block pagescripts %}
+  {% csrf_token %}
+  <script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  </script>
   <script src="{% static 'js/ticket.js' %}"></script>
 {% endblock %}
