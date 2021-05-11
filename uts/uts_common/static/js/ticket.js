@@ -8,6 +8,7 @@ const TicketsApp = {
             duplicationUrl: null,
             newOwnerEmail: null,
             error: null,
+            success: false,
         }
     },
     mounted() {
@@ -34,9 +35,6 @@ const TicketsApp = {
         toggleSubscription() {
             let data = {is_subscribed: !this.ticket.is_subscribed};
             QACommon.httpJSON("PATCH", API_TICKETS_URL + TICKET_ID + "/", data, this.postProcessTicket);
-        },
-        handleAPIError(request) {
-            this.error = request.responseJSON["detail"];
         },
         actionButtonClick() {
             let data = {
@@ -70,11 +68,20 @@ const TicketsApp = {
                 data["new_owner_email"] = this.newOwnerEmail;
                 delete data["info"];
             }
+            this.success = false;
             this.error = null;
-            this.info = null;
-            this.duplicationUrl = null;
-            this.newOwnerEmail = null;
-            QACommon.httpJSON("POST", API_TICKET_EVENTS_URL, data, this.postProcessTicket, this.handleAPIError);
+            QACommon.httpJSON("POST", API_TICKET_EVENTS_URL, data,
+                (data) => {
+                    this.action = "NONE";
+                    this.info = null;
+                    this.duplicationUrl = null;
+                    this.newOwnerEmail = null;
+                    this.success = true;
+                    this.postProcessTicket(data);
+                },
+                (response) => {
+                    this.error = response.responseJSON["detail"];
+                });
         },
     }
 }

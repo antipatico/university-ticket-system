@@ -39,6 +39,10 @@
                 <div class="alert alert-danger mb-3" role="alert" v-if="error != null">
                   <strong>Errore:</strong> $% error %$
                 </div>
+                <div class="alert alert-success mb-3" role="alert" v-if="error == null && success">
+                  <strong>Successo!</strong><br/>
+                  Azione eseguita con successo!
+                </div>
                 <select class="form-select" v-model="action">
                   <option value="NONE" selected hidden disabled>Seleziona un'azione</option>
                   <option value="ANSWER" v-if="!ticket.is_closed">Rispondi</option>
