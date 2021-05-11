@@ -99,6 +99,15 @@ const QACommon = {
             return "un minuto fa";
         }
         return "qualche secondo fa";
+    },
+    httpJSON(method, url, data={}, callback=function() {}) {
+     $.ajax(API_TICKETS_URL + TICKET_ID + "/", {
+            type: method,
+            dataType: "json",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            headers: {'X-CSRFToken': csrftoken},
+        }).done(callback);
     }
 }
 

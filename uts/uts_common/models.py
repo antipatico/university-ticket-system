@@ -79,7 +79,7 @@ class TicketEvent(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="events")
     timestamp = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(max_length=10 * 1024 * 1024, null=True, blank=True)
-    info = models.TextField(null=True, blank=True)
+    info = models.TextField(blank=True)
 
     class Meta:
         ordering = ["timestamp"]

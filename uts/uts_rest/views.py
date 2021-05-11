@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -54,7 +55,74 @@ class TicketsView(AuthenticatedViewSet):
             ticket.save()
             serializer = TicketSerializer(ticket, user=request.user, list_events=True)
             return Response(serializer.data)
-        return Response({"error": "invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TicketEventsView(AuthenticatedViewSet):
+    @transaction.atomic
+    def create(self, request):
+        owner = request.user.individual
+        info = request.data.get("info", "")
+        ticket_id = request.data.get("ticket_id", None)
+        duplicate_id = request.data.get("duplicate_id", None)
+        new_owner_email = request.data.get("new_owner_email", None)
+        try:
+            event_status = TicketStatus(request.data.get("status", None))
+        except ValueError:
+            return Response({"detail": "status is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+        queryset = Ticket.objects.all()
+        ticket = get_object_or_404(queryset, pk=ticket_id)
+
+        if event_status == TicketStatus.OPEN:
+            if not ticket.is_owned_by(owner):
+                return Response({"detail": "can't open a ticket you don't own"}, status=status.HTTP_401_UNAUTHORIZED)
+            if not ticket.is_closed:
+                return Response({"detail": "can't open a ticket that is already open"}, status=status.HTTP_403_FORBIDDEN)
+
+        if event_status == TicketStatus.CLOSED:
+            if not ticket.is_owned_by(owner):
+                return Response({"detail": "can't close a ticket you don't own"}, status=status.HTTP_401_UNAUTHORIZED)
+            if ticket.is_closed:
+                return Response({"detail": "can't close a ticket that is already closed"}, status=status.HTTP_403_FORBIDDEN)
+
+        if event_status == TicketStatus.ANSWER:
+            if ticket.is_closed:
+                return Response({"detail": "can't reply to a closed ticket"}, status=status.HTTP_400_BAD_REQUEST)
+            if type(info) is not str or len(info) < 1:
+                return Response({"detail": "can't reply with an empty answer"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if event_status == TicketStatus.NOTE:
+            if ticket.is_closed:
+                return Response({"detail": "can't annotate a closed ticket"}, status=status.HTTP_400_BAD_REQUEST)
+            if type(info) is not str or len(info) < 1:
+                return Response({"detail": "can't add an empty note"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if event_status == TicketStatus.INFO_NEEDED:
+            if ticket.is_closed:
+                return Response({"detail": "can't request more information on a closed ticket"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if event_status == TicketStatus.DUPLICATE:
+            if ticket.is_closed:
+                return Response({"detail": "can't mark a ticket as duplicate if closed"}, status=status.HTTP_400_BAD_REQUEST)
+            duplicate_ticket = get_object_or_404(Ticket, pk=duplicate_id)
+            info = duplicate_id
+
+        if event_status == TicketStatus.ESCALATION:
+            if not ticket.is_owned_by(owner):
+                return Response({"detail": "can't escalate a ticket you don't own"}, status=status.HTTP_401_UNAUTHORIZED)
+            new_user = get_object_or_404(User.objects.all(), email=new_owner_email)
+            new_owner = new_user.individual
+            if new_owner.id == owner.id:
+                return Response({"detail": "can't escalate a ticket to yourself"}, status=status.HTTP_400_BAD_REQUEST)
+            ticket.owner = new_owner
+            ticket.save()
+
+        ticket_event = TicketEvent.objects.create(ticket=ticket, owner=owner, status=event_status, info=info)
+        if event_status in [TicketStatus.OPEN, TicketStatus.CLOSED]:
+            ticket.status = event_status
+            ticket.save()
+        serializer = TicketSerializer(ticket, list_events=True, user=request.user)
+        return Response(serializer.data)
 
 
 class OrganizationsView(AuthenticatedViewSet):

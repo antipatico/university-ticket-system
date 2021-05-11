@@ -26,15 +26,16 @@ const TicketsApp = {
         },
         toggleSubscription() {
             let data = {is_subscribed: !this.ticket.is_subscribed};
-            $.ajax(API_TICKETS_URL + TICKET_ID + "/", {
-                type: "PATCH",
-                dataType: "json",
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                headers: {'X-CSRFToken': csrftoken},
-            }).done((data) => {
-                this.postProcessTicket(data);
-            });
+            QACommon.httpJSON("PATCH", API_TICKETS_URL + TICKET_ID + "/", data, this.postProcessTicket);
+        },
+        actionButtonClick() {
+            switch(this.action) {
+                case "NONE":
+                    alert("Perfavore seleziona un'azione");
+                    return;
+                case "ANSWER":
+
+            }
         },
     }
 }
