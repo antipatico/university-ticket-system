@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.db import transaction
@@ -122,6 +123,7 @@ class TicketEventsView(AuthenticatedViewSet):
 
         ticket_event = TicketEvent.objects.create(ticket=ticket, owner=owner, status=event_status, info=info)
         if event_status in [TicketStatus.OPEN, TicketStatus.CLOSED]:
+            ticket.ts_closed = None if event_status is TicketStatus.OPEN else timezone.now()
             ticket.status = event_status
             ticket.save()
         serializer = TicketSerializer(ticket, list_events=True, user=request.user)
