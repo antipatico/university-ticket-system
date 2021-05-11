@@ -85,7 +85,6 @@ class TicketEvent(models.Model):
         ordering = ["timestamp"]
 
 
-
 class Notification(models.Model):
     user = models.ForeignKey(Owner, on_delete=models.CASCADE)
     event = models.ForeignKey(TicketEvent, on_delete=models.CASCADE)

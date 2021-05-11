@@ -12,8 +12,6 @@ def user_post_save(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
         Individual.objects.create(user=instance)
-    else:
-        instance.profile.save()
 
 
 @receiver(post_save, sender=TicketEvent, dispatch_uid="ticket_event_post_save")
@@ -21,5 +19,3 @@ def ticket_event_post_save(sender, instance, created, **kwargs):
     if created:
         instance.ticket.ts_last_modified = timezone.now()
         instance.ticket.save()
-    else:
-        instance.save()
