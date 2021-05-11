@@ -48,7 +48,7 @@ class Ticket(models.Model):
     subscribers = models.ManyToManyField(User, blank=True, related_name="subscribed_tickets")
     tags = models.ManyToManyField(Tag, blank=True)
     ts_open = models.DateTimeField(auto_now_add=True)
-    ts_last_modified = models.DateTimeField(auto_now=True)
+    ts_last_modified = models.DateTimeField(auto_now_add=True)
     ts_closed = models.DateTimeField(null=True, blank=True)
 
     @property
