@@ -63,6 +63,7 @@ class TicketEventsView(AuthenticatedViewSet):
     def create(self, request):
         owner = request.user.individual
         info = request.data.get("info", "")
+        info = info if info is not None else ""
         ticket_id = request.data.get("ticket_id", None)
         duplicate_id = request.data.get("duplicate_id", None)
         new_owner_email = request.data.get("new_owner_email", None)
@@ -104,6 +105,8 @@ class TicketEventsView(AuthenticatedViewSet):
         if event_status == TicketStatus.DUPLICATE:
             if ticket.is_closed:
                 return Response({"detail": "can't mark a ticket as duplicate if closed"}, status=status.HTTP_400_BAD_REQUEST)
+            if ticket.id == duplicate_id:
+                return Response({"detail": "you can't mark a ticket as a duplicate of itself"}, status=status.HTTP_400_BAD_REQUEST)
             duplicate_ticket = get_object_or_404(Ticket, pk=duplicate_id)
             info = duplicate_id
 

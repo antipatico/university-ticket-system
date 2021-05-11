@@ -100,14 +100,17 @@ const QACommon = {
         }
         return "qualche secondo fa";
     },
-    httpJSON(method, url, data={}, callback=function() {}) {
-     $.ajax(API_TICKETS_URL + TICKET_ID + "/", {
+    httpJSON(method, url, data={}, successCallback=function() {}, errorCallback=function() {}, completeCallback=function() {}) {
+     $.ajax(url, {
             type: method,
             dataType: "json",
             data: JSON.stringify(data),
             contentType: "application/json",
             headers: {'X-CSRFToken': csrftoken},
-        }).done(callback);
+        })
+         .done(successCallback)
+         .fail(errorCallback)
+         .always(completeCallback);
     }
 }
 

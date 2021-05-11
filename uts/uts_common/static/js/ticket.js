@@ -4,6 +4,10 @@ const TicketsApp = {
         return {
             ticket: null,
             action: "NONE",
+            info: null,
+            duplicationUrl: null,
+            newOwnerEmail: null,
+            error: null,
         }
     },
     mounted() {
@@ -12,8 +16,11 @@ const TicketsApp = {
     created() {
         $("#ticketsApp").show();
     },
+    computed: {
+        TICKET_DETAILS_URL() { return TICKET_DETAILS_URL },
+        QACommon() { return QACommon}
+    },
     methods: {
-        f() { return QACommon },
         postProcessTicket(data) {
             let owner = data.owner;
             data.events.forEach((e) => {
@@ -28,14 +35,46 @@ const TicketsApp = {
             let data = {is_subscribed: !this.ticket.is_subscribed};
             QACommon.httpJSON("PATCH", API_TICKETS_URL + TICKET_ID + "/", data, this.postProcessTicket);
         },
+        handleAPIError(request) {
+            this.error = request.responseJSON["detail"];
+        },
         actionButtonClick() {
-            switch(this.action) {
-                case "NONE":
-                    alert("Perfavore seleziona un'azione");
-                    return;
-                case "ANSWER":
-
+            let data = {
+                "ticket_id": TICKET_ID,
+                "status": this.action,
+                "info": this.info,
             }
+            if(this.action === "NONE") {
+                this.error = "perfavore seleziona un'azione";
+                return;
+            }
+            if(this.action === "DUPLICATE") {
+                if (this.duplicationUrl === null) {
+                    this.error = "perfavore inserisci un URL";
+                    return;
+                }
+                let match = this.duplicationUrl.match(/\/([0-9]+)$/);
+                if (!match) {
+                    this.error = "URL non valido";
+                    return;
+                }
+                data["duplicate_id"] = match[1];
+                delete data["info"];
+            }
+
+            if(this.action === "ESCALATION") {
+                if(this.newOwnerEmail.length < 1) {
+                    this.error = "perfavore inserisci l'email del nuovo proprietario";
+                    return;
+                }
+                data["new_owner_email"] = this.newOwnerEmail;
+                delete data["info"];
+            }
+            this.error = null;
+            this.info = null;
+            this.duplicationUrl = null;
+            this.newOwnerEmail = null;
+            QACommon.httpJSON("POST", API_TICKET_EVENTS_URL, data, this.postProcessTicket, this.handleAPIError);
         },
     }
 }

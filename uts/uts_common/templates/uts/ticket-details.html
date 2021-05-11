@@ -10,22 +10,22 @@
         <h3 class="card-title mb-1">
           $% ticket.name %$ <span class="text-muted small">#$% ticket.id %$</span>
         </h3>
-        <h6 class="card-subtitle mb-2 bi" :class="[f().getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
-          &nbsp;$% f().getStatusName(ticket.status) %$</h6>
+        <h6 class="card-subtitle mb-2 bi" :class="[QACommon.getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
+          &nbsp;$% QACommon.getStatusName(ticket.status) %$</h6>
         <hr/>
         <div class="row">
           <div class="col-lg-9 col-md-12 mb-3">
             <div class="card mb-3" v-for="event in ticket.events.slice().reverse()">
-              <div class="card-header bi" :class="f().getIconClass(event.status)">
-                &nbsp;$% event.owner.name %$ $% f().getEventMessage(event.status) %$ $%
-                f().dateDiffFromNow(event.timestamp) %$
+              <div class="card-header bi" :class="QACommon.getIconClass(event.status)">
+                &nbsp;$% event.owner.name %$ $% QACommon.getEventMessage(event.status) %$ $%
+                QACommon.dateDiffFromNow(event.timestamp) %$
               </div>
               <div class="card-body"
                    v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
                 $% event.info %$
               </div>
               <div class="card-body" v-else-if="event.status === 'DUPLICATE'">
-                <h6 class="small">&nbsp;Duplicato del ticket <a href="#">#$% event.info %$</a></h6>
+                <h6 class="small">&nbsp;Duplicato del ticket <a :href="TICKET_DETAILS_URL + event.info">#$% event.info %$</a></h6>
               </div>
               <div class="card-body" v-else-if="event.status === 'ESCALATION'">
                 <h6 class="small">&nbsp;Il nuovo proprietario è <strong>$% event.newOwner.name %$</strong></h6>
@@ -36,6 +36,9 @@
                 <strong>Aggiungi un'azione</strong>
               </div>
               <div class="card-body">
+                <div class="alert alert-danger mb-3" role="alert" v-if="error != null">
+                  <strong>Errore:</strong> $% error %$
+                </div>
                 <select class="form-select" v-model="action">
                   <option value="NONE" selected hidden disabled>Seleziona un'azione</option>
                   <option value="ANSWER" v-if="!ticket.is_closed">Rispondi</option>
@@ -43,22 +46,22 @@
                   <option value="NOTE" v-if="!ticket.is_closed">Aggiungi una nota</option>
                   <option value="DUPLICATE" v-if="!ticket.is_closed">Segnala come duplicato</option>
                   <option value="ESCALATION" v-if="ticket.is_owned">Trasferisci la proprietà</option>
-                  <option value="CLOSED" v-if="ticket.is_owned && ticket.is_closed">Apri il ticket</option>
+                  <option value="OPEN" v-if="ticket.is_owned && ticket.is_closed">Apri il ticket</option>
                   <option value="CLOSED" v-else-if="ticket.is_owned && !ticket.is_closed">Chiudi il ticket</option>
                 </select>
                 <div v-if="action == 'ANSWER' || action == 'INFO_NEEDED' || action == 'NOTE'">
-                  <textarea class="form-control mt-2" rows="3"></textarea>
+                  <textarea class="form-control mt-2" rows="3" v-model="info"></textarea>
                 </div>
                 <div v-if="action == 'ESCALATION'">
                   <div class="form-group mt-2">
                     <label for="escalation-email">Indirizzo email del nuovo proprietario:</label>
-                    <input type="email" class="form-control" id="escalation-email" placeholder="mario.rossi@unimore.it">
+                    <input type="email" class="form-control" id="escalation-email" placeholder="mario.rossi@unimore.it" v-model="newOwnerEmail">
                   </div>
                 </div>
                 <div v-if="action == 'DUPLICATE'">
                   <div class="form-group mt-2">
                     <label for="duplicate-url">URL del ticket duplicato:</label>
-                    <input type="url" class="form-control" id="duplicate-url" placeholder="https://qaticket.ing.unimore.it/ticket/1337">
+                    <input type="url" class="form-control" id="duplicate-url" placeholder="https://qaticket.ing.unimore.it/ticket/1337" v-model="duplicationUrl">
                   </div>
                 </div>
                 <button class="btn btn-success mt-2 w-100"
