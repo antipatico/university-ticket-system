@@ -15,7 +15,7 @@ const TicketListItem = {
     </div>
     <div class="col-xl-4 col-lg-5 col-md-12">
        <small v-if="ticket.is_closed" class="text-muted">Chiuso {{dateDiffFromNow(ticket.ts_closed)}}</small>
-       <small v-else>Aperto {{dateDiffFromNow(ticket.ts_open)}}</small>
+       <small v-else>Creato {{dateDiffFromNow(ticket.ts_open)}}</small>
     </div>
   </div>
   <div class="row" v-else>
@@ -25,7 +25,7 @@ const TicketListItem = {
     </div>
     <div class="col-xl-4 col-lg-12">
        <small v-if="ticket.is_closed" class="text-muted">Chiuso {{dateDiffFromNow(ticket.ts_closed)}}</small>
-       <small v-else>Aperto {{dateDiffFromNow(ticket.ts_open)}}</small>
+       <small v-else>Creato {{dateDiffFromNow(ticket.ts_open)}}</small>
     </div>
   </div>
 </li>`,
