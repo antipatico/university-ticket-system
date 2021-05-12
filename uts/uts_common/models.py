@@ -78,11 +78,18 @@ class TicketEvent(models.Model):
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.ANSWER)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="events")
     timestamp = models.DateTimeField(auto_now_add=True)
-    attachment = models.FileField(max_length=10 * 1024 * 1024, null=True, blank=True)
     info = models.TextField(blank=True)
 
     class Meta:
         ordering = ["timestamp"]
+
+
+class TicketEventAttachment(models.Model):
+    event = models.ForeignKey(TicketEvent, on_delete=models.CASCADE, related_name="attachments", null=True, blank=True)
+    owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
+    name = models.TextField()
+    file = models.FileField(max_length=10 * 1024 * 1024, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
 class Notification(models.Model):

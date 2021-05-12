@@ -94,3 +94,9 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = Organization
         read_only_fields = fields = ['id', 'admin', 'members', 'name', 'administered']
 
+
+class AttachmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TicketEventAttachment
+        read_only_fields = fields = ['id', 'name', 'file']

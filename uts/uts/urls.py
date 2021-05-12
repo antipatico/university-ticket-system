@@ -24,4 +24,7 @@ urlpatterns = [
     path('shibboleth/', include('uts_shibboleth.urls', namespace="uts_shibboleth")),
     path('api/v1/', include('uts_rest.urls', namespace="uts_rest")),
     path('', include('uts_common.urls', namespace="uts_common")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

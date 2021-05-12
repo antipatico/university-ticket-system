@@ -78,6 +78,7 @@
 {% block defaultscripts %}
   {% url "uts_common:ticket_details" 0 as ticket_details_url %}
 <script type="text/javascript">
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
   const TICKET_ID = {{ ticket_id|default:"null" }};
   const TICKET_DETAILS_URL = "{{ ticket_details_url | slice:"-1" }}";
   const LOCAL_LOGIN_URL = "{% url "uts_common:local_login" %}";
@@ -85,6 +86,7 @@
   const API_TICKETS_URL = "{% url "uts_rest:Ticket-list" %}";
   const API_SUBSCRIBED_TICKETS_URL = "{% url "uts_rest:SubscribedTicket-list" %}";
   const API_TICKET_EVENTS_URL = "{% url "uts_rest:TicketEvent-list" %}";
+  const API_FILE_UPLOAD_URL = "{% url "uts_rest:Attachment-list" %}";
   const API_ORGANIZATIONS_URL = "{% url "uts_rest:Organizations-list" %}";
 </script>
 <script src="{% static "js/common.js" %}"></script>

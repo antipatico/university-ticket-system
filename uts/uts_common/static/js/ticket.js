@@ -1,5 +1,8 @@
 const TicketsApp = {
     delimiters: ['$%', '%$'],
+    components: {
+        'file-selector': FileSelector,
+    },
     data() {
         return {
             ticket: null,

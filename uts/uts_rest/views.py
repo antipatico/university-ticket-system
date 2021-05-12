@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -128,6 +129,26 @@ class TicketEventsView(AuthenticatedViewSet):
             ticket.save()
         serializer = TicketSerializer(ticket, list_events=True, user=request.user)
         return Response(serializer.data)
+
+
+class AttachmentsView(AuthenticatedViewSet):
+    parser_class = (FileUploadParser,)
+
+    def create(self, request):
+        if 'file' not in request.data:
+            return Response({"detail": "empty file"}, status=status.HTTP_400_BAD_REQUEST)
+        f = request.data.get("file", None)
+        attachment = TicketEventAttachment.objects.create(owner=request.user.individual, name=f.name, file=f)
+        attachment.save()
+        serializer = AttachmentSerializer(attachment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, pk=None):
+        attachment = get_object_or_404(TicketEventAttachment.objects.all(), pk=pk)
+        if request.user.individual.id != attachment.owner.id:
+            return Response({"detail": "can't delete a file you don't own"}, status=status.HTTP_403_FORBIDDEN)
+        attachment.delete()
+        return Response({}, status=status.HTTP_200_OK)
 
 
 class OrganizationsView(AuthenticatedViewSet):

@@ -136,6 +136,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Used for user attachments uploads
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Django APScheduler options
 #
