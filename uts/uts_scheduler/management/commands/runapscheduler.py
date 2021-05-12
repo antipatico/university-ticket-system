@@ -1,19 +1,25 @@
 import logging
-
+from datetime import timedelta
 from django.conf import settings
-
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
+from uts_common.models import TicketEventAttachment
 
 logger = logging.getLogger(__name__)
 
 
 def delete_old_job_executions(max_age=604_800):
-    """This job deletes all apscheduler job executions older than `max_age` from the database."""
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
+
+
+def delete_unused_attachments(max_age=43_200):
+    unused_attachments = TicketEventAttachment.objects.filter(event=None, timestamp__lt=timezone.now()-timedelta(hours=12))
+    deleted, _ = unused_attachments.delete()
+    logger.info(f"delete_unused_attachments: deleted {deleted} unused uploaded files.")
 
 
 class Command(BaseCommand):
@@ -34,8 +40,14 @@ class Command(BaseCommand):
             max_instances=1,
             replace_existing=True,
         )
-        logger.info(
-            "Added weekly job: 'delete_old_job_executions'."
+        scheduler.add_job(
+            delete_unused_attachments,
+            trigger=CronTrigger(
+                hour="03", minute="00"
+            ),
+            id="delete_unused_attachments",
+            max_instances=1,
+            replace_existing=True,
         )
 
         try:
