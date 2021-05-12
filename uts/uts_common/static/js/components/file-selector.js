@@ -1,4 +1,5 @@
 const FileSelector = {
+    emits: ["filesChanged"],
     props: {
         multiFile: Boolean,
     },
@@ -31,13 +32,16 @@ const FileSelector = {
                 headers: {'X-CSRFToken': csrftoken},
             })
              .done((data) => {
-                 console.log("Success");
-                 console.log(data);
                  this.uploadedFiles[data.id] = data;
+                let ids = [];
+                for (const [key, value] of Object.entries(this.uploadedFiles)) {
+                    ids.push(value.id);
+                }
+                 this.$emit("filesChanged", ids);
              })
              .fail((response) => {
-                 console.log("Failure");
-                 console.log(response);
+                 console.error("Failure");
+                 console.error(response);
              });
         },
         deleteFile(id) {
@@ -49,8 +53,14 @@ const FileSelector = {
             QACommon.httpJSON("DELETE", API_FILE_UPLOAD_URL + f.id + "/", {},
                 () =>{
                 delete this.uploadedFiles[id];
+                let ids = [];
+                for (const [key, value] of Object.entries(this.uploadedFiles)) {
+                    ids.push(value.id);
+                }
+                this.$emit("filesChanged", ids);
             });
         },
+
     },
     template: `
     <div class="m-2">

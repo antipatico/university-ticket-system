@@ -23,6 +23,14 @@
               <div class="card-body"
                    v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
                 $% event.info %$
+                <div class="m-3" v-if="event.attachments.length > 0">
+                  <strong>Allegati</strong>
+                  <ul class="list-group small" >
+                    <li class="list-group-item" v-for="attachment in event.attachments">
+                      <a :href="attachment.file" target="_blank">$% attachment.name %$</a>
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div class="card-body" v-else-if="event.status === 'DUPLICATE'">
                 <h6 class="small">&nbsp;Duplicato del ticket <a :href="TICKET_DETAILS_URL + event.info">#$% event.info %$</a></h6>
@@ -55,7 +63,7 @@
                 </select>
                 <div v-if="action == 'ANSWER' || action == 'INFO_NEEDED' || action == 'NOTE'">
                   <textarea class="form-control mt-2" rows="3" v-model="info"></textarea>
-                  <file-selector multi-file></file-selector>
+                  <file-selector multi-file v-on:files-changed="onAttachmentsChange"></file-selector>
                 </div>
                 <div v-if="action == 'ESCALATION'">
                   <div class="form-group mt-2">

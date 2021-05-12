@@ -17,16 +17,22 @@ class OwnerSerializer(serializers.ModelSerializer):
         read_only_fields = fields = ['id', 'name', 'type']
 
 
+class TicketEventAttachmentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketEventAttachment
+        read_only_fields = fields = ['id', 'name', 'file']
+
+
 class TicketEventSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
+    attachments = TicketEventAttachmentsSerializer(many=True)
 
     class Meta:
         model = TicketEvent
-        read_only_fields = fields = ['id', 'owner', 'status', 'timestamp', 'info']
+        read_only_fields = fields = ['id', 'owner', 'status', 'timestamp', 'info', 'attachments']
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         read_only_fields = fields = ['id', 'username', 'email', 'full_name']
@@ -96,7 +102,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = TicketEventAttachment
         read_only_fields = fields = ['id', 'name', 'file']

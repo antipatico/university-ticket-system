@@ -12,6 +12,7 @@ const TicketsApp = {
             newOwnerEmail: null,
             error: null,
             success: false,
+            attachments: {},
         }
     },
     mounted() {
@@ -39,11 +40,15 @@ const TicketsApp = {
             let data = {is_subscribed: !this.ticket.is_subscribed};
             QACommon.httpJSON("PATCH", API_TICKETS_URL + TICKET_ID + "/", data, this.postProcessTicket);
         },
+        onAttachmentsChange(attachments) {
+            this.attachments = attachments;
+        },
         actionButtonClick() {
             let data = {
                 "ticket_id": TICKET_ID,
                 "status": this.action,
                 "info": this.info,
+                "attachments": this.attachments,
             }
             if(this.action === "NONE") {
                 this.error = "perfavore seleziona un'azione";
@@ -80,6 +85,7 @@ const TicketsApp = {
                     this.duplicationUrl = null;
                     this.newOwnerEmail = null;
                     this.success = true;
+                    this.attachments = [];
                     this.postProcessTicket(data);
                 },
                 (response) => {

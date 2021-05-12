@@ -69,6 +69,7 @@ class TicketEventsView(AuthenticatedViewSet):
         ticket_id = request.data.get("ticket_id", None)
         duplicate_id = request.data.get("duplicate_id", None)
         new_owner_email = request.data.get("new_owner_email", None)
+        attachments = request.data.get("attachments", [])
         try:
             event_status = TicketStatus(request.data.get("status", None))
         except ValueError:
@@ -127,6 +128,17 @@ class TicketEventsView(AuthenticatedViewSet):
             ticket.ts_closed = None if event_status is TicketStatus.OPEN else timezone.now()
             ticket.status = event_status
             ticket.save()
+
+        if event_status in [TicketStatus.NOTE, TicketStatus.ANSWER, TicketStatus.INFO_NEEDED]:
+            for attachment_id in attachments:
+                attachment = get_object_or_404(TicketEventAttachment.objects.all(), pk=attachment_id)
+                if attachment.event is not None:
+                    return Response({"detail": "can't attach a file to multiple tickets"}, status=status.HTTP_400_BAD_REQUEST)
+                if attachment.owner.id != owner.id:
+                    return Response({"detail": "can't attach a file you don't own"}, status=status.HTTP_403_FORBIDDEN)
+                attachment.event = ticket_event
+                attachment.save()
+
         serializer = TicketSerializer(ticket, list_events=True, user=request.user)
         return Response(serializer.data)
 

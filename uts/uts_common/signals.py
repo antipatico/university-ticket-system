@@ -1,7 +1,7 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.utils import timezone
-from .models import User, TicketEvent, Profile, Individual
+from uts_common.models import *
 
 # https://docs.djangoproject.com/en/3.1/topics/signals/#connecting-receiver-functions
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
@@ -19,3 +19,9 @@ def ticket_event_post_save(sender, instance, created, **kwargs):
     if created:
         instance.ticket.ts_last_modified = timezone.now()
         instance.ticket.save()
+
+
+@receiver(pre_delete, sender=TicketEventAttachment, dispatch_uid="ticket_event_attachment_pre_delete")
+def ticket_event_attachment_pre_delete(sender, instance, using, **kwargs):
+    if instance.file:
+        instance.file.delete()
