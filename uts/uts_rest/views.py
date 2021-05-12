@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.db import transaction
@@ -150,7 +151,7 @@ class AttachmentsView(AuthenticatedViewSet):
         if 'file' not in request.data:
             return Response({"detail": "empty file"}, status=status.HTTP_400_BAD_REQUEST)
         f = request.data.get("file", None)
-        if f.size > 10 * 1024 * 1024:
+        if f.size > settings.UTS['MAX_ATTACHMENT_FILE_SIZE']:
             return Response({"detail": "file size exceeds limits (10MB)"}, status=status.HTTP_400_BAD_REQUEST)
         attachment = TicketEventAttachment.objects.create(owner=request.user.individual, name=f.name, file=f)
         attachment.save()
