@@ -88,7 +88,7 @@ class TicketEventAttachment(models.Model):
     event = models.ForeignKey(TicketEvent, on_delete=models.CASCADE, related_name="attachments", null=True, blank=True)
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
     name = models.TextField()
-    file = models.FileField(max_length=10 * 1024 * 1024, null=True, blank=True)
+    file = models.FileField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
 

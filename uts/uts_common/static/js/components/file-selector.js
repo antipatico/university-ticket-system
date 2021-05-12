@@ -8,6 +8,7 @@ const FileSelector = {
             file: null,
             uploadedFiles: {},
             error: null,
+            uploading: false,
         };
     },
     methods: {
@@ -24,6 +25,7 @@ const FileSelector = {
             }
             let formData = new FormData();
             formData.append('file', this.file);
+            this.uploading = true;
             $.ajax(API_FILE_UPLOAD_URL, {
                 type: "POST",
                 data: formData,
@@ -40,8 +42,10 @@ const FileSelector = {
                  this.$emit("filesChanged", ids);
              })
              .fail((response) => {
-                 console.error("Failure");
-                 console.error(response);
+                 this.error = response.responseJSON["detail"];
+             })
+             .always(() => {
+                 this.uploading = false;
              });
         },
         deleteFile(id) {
@@ -76,6 +80,11 @@ const FileSelector = {
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" v-on:click="$refs.file.click()" v-if="this.uploadedFiles.length < 1 || this.multiFile">Aggiungi un allegato</button>
+      <div class="m-3" v-if="uploading">
+        <img src="/static/images/loading.gif" class="loadingGif"/>
+      </div>
+      <div v-else>
+        <button class="btn btn-primary" v-on:click="$refs.file.click()" v-if="this.uploadedFiles.length < 1 || this.multiFile">Aggiungi un allegato</button>
+      </div>
     </div>`,
 }

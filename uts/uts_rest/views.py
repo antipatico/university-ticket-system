@@ -150,6 +150,8 @@ class AttachmentsView(AuthenticatedViewSet):
         if 'file' not in request.data:
             return Response({"detail": "empty file"}, status=status.HTTP_400_BAD_REQUEST)
         f = request.data.get("file", None)
+        if f.size > 10 * 1024 * 1024:
+            return Response({"detail": "file size exceeds limits (10MB)"}, status=status.HTTP_400_BAD_REQUEST)
         attachment = TicketEventAttachment.objects.create(owner=request.user.individual, name=f.name, file=f)
         attachment.save()
         serializer = AttachmentSerializer(attachment)
