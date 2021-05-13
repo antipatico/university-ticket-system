@@ -9,6 +9,7 @@ class UtsSchedulerConfig(AppConfig):
         Schedule.objects.get_or_create(
             name="delete_unused_ticket_event_attachments",
             func='uts_scheduler.schedules.delete_unused_ticket_event_attachments',
-            schedule_type=Schedule.DAILY,
+            schedule_type=Schedule.CRON,
+            cron="0 3 * * * *",  # Schedule every day at 3 A.M.
             repeats=-1
         )
