@@ -62,84 +62,41 @@ class TicketsView(AuthenticatedViewSet):
 
 
 class TicketEventsView(AuthenticatedViewSet):
-    @transaction.atomic
     def create(self, request):
-        owner = request.user.individual
+        owner_id = request.user.individual.id
         info = request.data.get("info", "")
         info = info if info is not None else ""
         ticket_id = request.data.get("ticket_id", None)
         duplicate_id = request.data.get("duplicate_id", None)
         new_owner_email = request.data.get("new_owner_email", None)
         attachments = request.data.get("attachments", [])
+
         try:
             event_status = TicketStatus(request.data.get("status", None))
         except ValueError:
             return Response({"detail": "status is not valid"}, status=status.HTTP_400_BAD_REQUEST)
-        queryset = Ticket.objects.all()
-        ticket = get_object_or_404(queryset, pk=ticket_id)
-
-        if event_status == TicketStatus.OPEN:
-            if not ticket.is_owned_by(owner):
-                return Response({"detail": "can't open a ticket you don't own"}, status=status.HTTP_401_UNAUTHORIZED)
-            if not ticket.is_closed:
-                return Response({"detail": "can't open a ticket that is already open"}, status=status.HTTP_403_FORBIDDEN)
-
-        if event_status == TicketStatus.CLOSED:
-            if not ticket.is_owned_by(owner):
-                return Response({"detail": "can't close a ticket you don't own"}, status=status.HTTP_401_UNAUTHORIZED)
-            if ticket.is_closed:
-                return Response({"detail": "can't close a ticket that is already closed"}, status=status.HTTP_403_FORBIDDEN)
-
-        if event_status == TicketStatus.ANSWER:
-            if ticket.is_closed:
-                return Response({"detail": "can't reply to a closed ticket"}, status=status.HTTP_400_BAD_REQUEST)
-            if type(info) is not str or len(info) < 1:
-                return Response({"detail": "can't reply with an empty answer"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if event_status == TicketStatus.NOTE:
-            if ticket.is_closed:
-                return Response({"detail": "can't annotate a closed ticket"}, status=status.HTTP_400_BAD_REQUEST)
-            if type(info) is not str or len(info) < 1:
-                return Response({"detail": "can't add an empty note"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if event_status == TicketStatus.INFO_NEEDED:
-            if ticket.is_closed:
-                return Response({"detail": "can't request more information on a closed ticket"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if event_status == TicketStatus.DUPLICATE:
-            if ticket.is_closed:
-                return Response({"detail": "can't mark a ticket as duplicate if closed"}, status=status.HTTP_400_BAD_REQUEST)
-            if ticket.id == duplicate_id:
-                return Response({"detail": "you can't mark a ticket as a duplicate of itself"}, status=status.HTTP_400_BAD_REQUEST)
-            duplicate_ticket = get_object_or_404(Ticket, pk=duplicate_id)
-            info = duplicate_id
-
+        if event_status == TicketStatus.ANSWER and (type(info) is not str or len(info) < 1):
+            return Response({"detail": "can't reply with an empty answer"}, status=status.HTTP_400_BAD_REQUEST)
+        if event_status == TicketStatus.NOTE and (type(info) is not str or len(info) < 1):
+            return Response({"detail": "can't add an empty note"}, status=status.HTTP_400_BAD_REQUEST)
+        if event_status == TicketStatus.DUPLICATE and ticket_id == duplicate_id:
+            return Response({"detail": "can't mark a ticket as a duplicate of itself"}, status=status.HTTP_400_BAD_REQUEST)
         if event_status == TicketStatus.ESCALATION:
-            if not ticket.is_owned_by(owner):
-                return Response({"detail": "can't escalate a ticket you don't own"}, status=status.HTTP_401_UNAUTHORIZED)
             new_user = get_object_or_404(User.objects.all(), email=new_owner_email)
             new_owner = new_user.individual
-            if new_owner.id == owner.id:
+            if new_owner.id == owner_id:
                 return Response({"detail": "can't escalate a ticket to yourself"}, status=status.HTTP_400_BAD_REQUEST)
-            ticket.owner = new_owner
-            ticket.save()
-
-        ticket_event = TicketEvent.objects.create(ticket=ticket, owner=owner, status=event_status, info=info)
-        if event_status in [TicketStatus.OPEN, TicketStatus.CLOSED]:
-            ticket.ts_closed = None if event_status is TicketStatus.OPEN else timezone.now()
-            ticket.status = event_status
-            ticket.save()
-
-        if event_status in [TicketStatus.NOTE, TicketStatus.ANSWER, TicketStatus.INFO_NEEDED]:
-            for attachment_id in attachments:
-                attachment = get_object_or_404(TicketEventAttachment.objects.all(), pk=attachment_id)
-                if attachment.event is not None:
-                    return Response({"detail": "can't attach a file to multiple tickets"}, status=status.HTTP_400_BAD_REQUEST)
-                if attachment.owner.id != owner.id:
-                    return Response({"detail": "can't attach a file you don't own"}, status=status.HTTP_403_FORBIDDEN)
-                attachment.event = ticket_event
-                attachment.save()
-
+        try:
+            TicketEvent.add_event(ticket_id, owner_id, event_status, info, duplicate_id, new_owner_email, attachments)
+        except ValueError as e:
+            return Response({"detail": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+        except Ticket.DoesNotExist:
+            return Response({"detail": "invalid ticket"}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"detail": "invalid new owner email"}, status=status.HTTP_404_NOT_FOUND)
+        except TicketEventAttachment.DoesNotExist:
+            return Response({"detail": "invalid attachment"}, status=status.HTTP_404_NOT_FOUND)
+        ticket = get_object_or_404(Ticket.objects.all(), pk=ticket_id)
         serializer = TicketSerializer(ticket, list_events=True, user=request.user)
         return Response(serializer.data)
 

@@ -1,5 +1,7 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from polymorphic.models import PolymorphicModel
 
 
@@ -79,6 +81,56 @@ class TicketEvent(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="events")
     timestamp = models.DateTimeField(auto_now_add=True)
     info = models.TextField(blank=True)
+
+    @classmethod
+    @transaction.atomic
+    def add_event(cls, ticket_id, owner_id, event_status, info=None, duplicate_id=None, new_owner_email=None, attachments=[]):
+        ticket = Ticket.objects.get(pk=ticket_id)
+        owner = Owner.objects.get(pk=owner_id)
+        if type(event_status) != TicketStatus:
+            raise ValueError("event status must be a TicketStatus")
+        if event_status == TicketStatus.OPEN:
+            if not ticket.is_owned_by(owner):
+                raise ValueError("can't open a ticket you don't own")
+            if not ticket.is_closed:
+                raise ValueError("can't open a ticket that is already open")
+        if event_status == TicketStatus.CLOSED:
+            if not ticket.is_owned_by(owner):
+                raise ValueError("can't close a ticket you don't own")
+            if ticket.is_closed:
+                raise ValueError("can't close a ticket that is already closed")
+        if event_status == TicketStatus.ANSWER and ticket.is_closed:
+            raise ValueError("can't reply to a closed ticket")
+        if event_status == TicketStatus.NOTE and ticket.is_closed:
+            raise ValueError("can't annotate a closed ticket")
+        if event_status == TicketStatus.INFO_NEEDED and ticket.is_closed:
+            raise ValueError("can't request more information on a closed ticket")
+        if event_status == TicketStatus.DUPLICATE:
+            if ticket.is_closed:
+                raise ValueError("can't mark a ticket as duplicate if closed")
+            duplicate_ticket = Ticket.objects.get(pk=duplicate_id)
+            info = duplicate_id
+        if event_status == TicketStatus.ESCALATION:
+            if not ticket.is_owned_by(owner):
+                raise ValueError("can't escalate a ticket you don't own")
+            new_owner = User.objects.get(email=new_owner_email).individual
+            ticket.owner = new_owner
+            ticket.save()
+        ticket_event = TicketEvent.objects.create(ticket=ticket, owner=owner, status=event_status, info=info)
+        if event_status in [TicketStatus.OPEN, TicketStatus.CLOSED]:
+            ticket.ts_closed = None if event_status is TicketStatus.OPEN else timezone.now()
+            ticket.status = event_status
+            ticket.save()
+        if event_status in [TicketStatus.NOTE, TicketStatus.ANSWER, TicketStatus.INFO_NEEDED]:
+            for attachment_id in attachments:
+                attachment = TicketEventAttachment.objects.get(pk=attachment_id)
+                if attachment.event is not None:
+                    raise ValueError("can't attach a file to multiple tickets")
+                if attachment.owner.id != owner.id:
+                    return ValueError("can't attach a file you don't own")
+                attachment.event = ticket_event
+                attachment.save()
+        return ticket_event.id
 
     class Meta:
         ordering = ["timestamp"]
