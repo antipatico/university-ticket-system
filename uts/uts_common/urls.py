@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from uts_common import views
 
 app_name = "uts_common"
 urlpatterns = [
