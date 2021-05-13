@@ -86,6 +86,10 @@ class TicketEventsView(AuthenticatedViewSet):
             new_owner = new_user.individual
             if new_owner.id == owner_id:
                 return Response({"detail": "can't escalate a ticket to yourself"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # schedule('uts_scheduler.schedules.add_ticket_event',
+        #          1, 1, "ANSWER", "ciao!",
+        #          schedule_type='O')
         try:
             TicketEvent.add_event(ticket_id, owner_id, event_status, info, duplicate_id, new_owner_email, attachments)
         except ValueError as e:
