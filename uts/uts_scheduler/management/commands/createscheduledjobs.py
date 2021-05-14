@@ -1,9 +1,12 @@
-from django.apps import AppConfig
+from django.core.management.base import BaseCommand, CommandError
+from uts_common.models import *
+from django.db.utils import IntegrityError
 
 
-class UtsSchedulerConfig(AppConfig):
-    name = 'uts_scheduler'
-    def ready(self):
+class Command(BaseCommand):
+    help = 'Create scheduled jobs, which will be run using django-q qcluster'
+
+    def handle(self, *args, **options):
         from django_q.models import Schedule
         if not Schedule.objects.filter(name="delete_unused_ticket_event_attachments").exists():
             Schedule.objects.create(

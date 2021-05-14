@@ -1,8 +1,11 @@
-from django.utils import timezone
+from datetime import timedelta
+
+from django.utils import timezone, dateparse
 from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django_q.tasks import schedule
 from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -62,6 +65,7 @@ class TicketsView(AuthenticatedViewSet):
 
 
 class TicketEventsView(AuthenticatedViewSet):
+    @transaction.atomic
     def create(self, request):
         owner_id = request.user.individual.id
         info = request.data.get("info", "")
@@ -70,6 +74,7 @@ class TicketEventsView(AuthenticatedViewSet):
         duplicate_id = request.data.get("duplicate_id", None)
         new_owner_email = request.data.get("new_owner_email", None)
         attachments = request.data.get("attachments", [])
+        schedule_datetime = request.data.get("schedule_datetime", "")
 
         try:
             event_status = TicketStatus(request.data.get("status", None))
@@ -80,26 +85,54 @@ class TicketEventsView(AuthenticatedViewSet):
         if event_status == TicketStatus.NOTE and (type(info) is not str or len(info) < 1):
             return Response({"detail": "can't add an empty note"}, status=status.HTTP_400_BAD_REQUEST)
         if event_status == TicketStatus.DUPLICATE and ticket_id == duplicate_id:
-            return Response({"detail": "can't mark a ticket as a duplicate of itself"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "can't mark a ticket as a duplicate of itself"},
+                            status=status.HTTP_400_BAD_REQUEST)
         if event_status == TicketStatus.ESCALATION:
             new_user = get_object_or_404(User.objects.all(), email=new_owner_email)
             new_owner = new_user.individual
             if new_owner.id == owner_id:
                 return Response({"detail": "can't escalate a ticket to yourself"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # schedule('uts_scheduler.schedules.add_ticket_event',
-        #          1, 1, "ANSWER", "ciao!",
-        #          schedule_type='O')
         try:
-            TicketEvent.add_event(ticket_id, owner_id, event_status, info, duplicate_id, new_owner_email, attachments)
-        except ValueError as e:
-            return Response({"detail": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
-        except Ticket.DoesNotExist:
-            return Response({"detail": "invalid ticket"}, status=status.HTTP_404_NOT_FOUND)
-        except User.DoesNotExist:
-            return Response({"detail": "invalid new owner email"}, status=status.HTTP_404_NOT_FOUND)
-        except TicketEventAttachment.DoesNotExist:
-            return Response({"detail": "invalid attachment"}, status=status.HTTP_404_NOT_FOUND)
+            to_schedule = dateparse.parse_datetime(schedule_datetime)
+            if schedule_datetime != "" and to_schedule is None:
+                raise TypeError()
+        except TypeError:
+            return Response({"detail": "scheduled datetime is not a valid datetime"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if to_schedule is not None:
+            if to_schedule < timezone.now() + timedelta(minutes=5):
+                return Response({"detail": "schedule datetime is too near the present (or maybe even in the past)"},
+                                status=status.HTTP_400_BAD_REQUEST)
+            for attachment_id in attachments:
+                attachment = TicketEventAttachment.objects.get(pk=attachment_id)
+                if attachment.event is not None:
+                    return Response({"detail": "can't attach a file to multiple tickets"},
+                                    status=status.HTTP_400_BAD_REQUEST)
+                if attachment.owner.id != owner_id:
+                    return Response({"detail": "can't attach a file you don't own"}, status=status.HTTP_400_BAD_REQUEST)
+                attachment.ts_delete = to_schedule + timedelta(hours=1)
+                attachment.save()
+
+            schedule('uts_scheduler.schedules.add_ticket_event',
+                     ticket_id, owner_id, str(event_status),
+                     info=info, duplicate_id=duplicate_id, new_owner_email=new_owner_email, attachments=attachments,
+                     next_run=to_schedule,
+                     schedule_type='O')
+        else:
+            try:
+                TicketEvent.add_event(ticket_id, owner_id, event_status, info, duplicate_id, new_owner_email,
+                                      attachments)
+            except ValueError as e:
+                return Response({"detail": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+            except Ticket.DoesNotExist:
+                return Response({"detail": "invalid ticket"}, status=status.HTTP_404_NOT_FOUND)
+            except User.DoesNotExist:
+                return Response({"detail": "invalid new owner email"}, status=status.HTTP_404_NOT_FOUND)
+            except TicketEventAttachment.DoesNotExist:
+                return Response({"detail": "invalid attachment"}, status=status.HTTP_404_NOT_FOUND)
+
         ticket = get_object_or_404(Ticket.objects.all(), pk=ticket_id)
         serializer = TicketSerializer(ticket, list_events=True, user=request.user)
         return Response(serializer.data)

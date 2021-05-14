@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -129,6 +131,7 @@ class TicketEvent(models.Model):
                 if attachment.owner.id != owner.id:
                     return ValueError("can't attach a file you don't own")
                 attachment.event = ticket_event
+                attachment.ts_delete = None
                 attachment.save()
         return ticket_event.id
 
@@ -142,6 +145,7 @@ class TicketEventAttachment(models.Model):
     name = models.TextField()
     file = models.FileField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    ts_delete = models.DateTimeField(default=timezone.now() + timedelta(hours=12), null=True)
 
 
 class Notification(models.Model):
