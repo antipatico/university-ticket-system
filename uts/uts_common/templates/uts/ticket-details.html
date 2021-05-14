@@ -77,9 +77,23 @@
                     <input type="url" class="form-control" id="duplicate-url" placeholder="https://qaticket.ing.unimore.it/ticket/1337" v-model="duplicationUrl">
                   </div>
                 </div>
-                <button class="btn btn-success mt-2 w-100"
-                  v-if="action != 'NONE'"
-                  v-on:click="actionButtonClick()">Invia</button>
+                <div class="mt-3 row" v-if="action != 'NONE'">
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" v-model="scheduled">
+                      <label class="form-check-label" for="flexSwitchCheckDefault"><strong>Invio Programmato</strong></label>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-sm-12" v-if="scheduled">
+                    <label for="example-date-input" class="form-label">Data</label>
+                    <input class="form-control" type="date" v-model="scheduledDate">
+                  </div>
+                  <div class="col-md-2 col-sm-12 mb-2" v-if="scheduled">
+                    <label for="example-time-input" class="form-label">Ora</label>
+                    <input class="form-control" type="time" v-model="scheduledTime">
+                  </div>
+                  <button class="btn btn-success mt-2 col-12" v-on:click="actionButtonClick()">Invia</button>
+                </div>
               </div>
             </div>
           </div>
@@ -95,8 +109,8 @@
             </div>
             <div class="mb-4">
               <button class="btn w-100"
-                 :class="ticket.is_subscribed?'btn-danger':'btn-success'"
-                 v-on:click="toggleSubscription">$% ticket.is_subscribed?'Smetti di seguire':'Segui' %$</button>
+                      :class="ticket.is_subscribed?'btn-danger':'btn-success'"
+                      v-on:click="toggleSubscription">$% ticket.is_subscribed?'Smetti di seguire':'Segui' %$</button>
             </div>
             <div class="mb-4">
               <h5>Seguito da</h5>
@@ -117,7 +131,7 @@
 {% block pagescripts %}
   {% csrf_token %}
   <script>
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   </script>
   <script src="{%  static 'js/components/file-selector.js' %}"></script>
   <script src="{% static 'js/ticket.js' %}"></script>

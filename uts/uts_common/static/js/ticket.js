@@ -13,6 +13,9 @@ const TicketsApp = {
             error: null,
             success: false,
             attachments: {},
+            scheduled: false,
+            scheduledDate: null,
+            scheduledTime: null,
         }
     },
     mounted() {
@@ -44,6 +47,9 @@ const TicketsApp = {
             this.attachments = attachments;
         },
         actionButtonClick() {
+            this.success = false;
+            this.error = null;
+
             let data = {
                 "ticket_id": TICKET_ID,
                 "status": this.action,
@@ -76,8 +82,20 @@ const TicketsApp = {
                 data["new_owner_email"] = this.newOwnerEmail;
                 delete data["info"];
             }
-            this.success = false;
-            this.error = null;
+
+            if(this.scheduled) {
+                if(this.scheduledDate == null || this.scheduledTime == null) {
+                    this.error ="perfavore seleziona data e ora";
+                    return;
+                }
+                let dateTime = new Date(this.scheduledDate+" "+this.scheduledTime);
+                if(dateTime < Date.now()) {
+                    this.error = "perfavore seleziona una data futura";
+                    return;
+                }
+                data["schedule_datetime"] = dateTime;
+            }
+
             QACommon.httpJSON("POST", API_TICKET_EVENTS_URL, data,
                 (data) => {
                     this.action = "NONE";
@@ -86,6 +104,9 @@ const TicketsApp = {
                     this.newOwnerEmail = null;
                     this.success = true;
                     this.attachments = [];
+                    this.scheduled = false;
+                    this.scheduledTime = null;
+                    this.scheduledDate = null;
                     this.postProcessTicket(data);
                 },
                 (response) => {
