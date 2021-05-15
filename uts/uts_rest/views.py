@@ -162,7 +162,5 @@ class AttachmentsView(AuthenticatedViewSet):
 
 class OrganizationsView(AuthenticatedViewSet):
     def list(self, request):
-        organizations = request.user.organizations.all()
-        administered_org = request.user.administered_organizations.all()
-        serializer = OrganizationSerializer(administered_org.union(organizations), user=request.user, many=True)
+        serializer = OrganizationSerializer(request.user.all_organizations, user=request.user, many=True)
         return Response(serializer.data)

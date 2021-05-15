@@ -1,8 +1,6 @@
 from datetime import timedelta
-
-from django.db import models, transaction
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
+from django.db import models, transaction
 from django.utils import timezone
 from polymorphic.models import PolymorphicModel
 
@@ -156,7 +154,8 @@ class Notification(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email_notifications = models.BooleanField(default=True)
+    email_notifications = models.BooleanField(default=False)
 
 
 User.full_name = property(lambda u: f"{u.username}" if not u.first_name else (f"{u.first_name}" if not u.last_name else f"{u.first_name} {u.last_name}"))
+User.all_organizations = property(lambda u: u.organizations.all().union(u.administered_organizations.all()))
