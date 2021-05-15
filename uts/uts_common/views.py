@@ -40,3 +40,9 @@ def ticket_details(request, pk):
     if not Ticket.objects.filter(pk=pk).exists():
         raise Http404
     return render(request, "uts/ticket-details.html", context={"ticket_id": pk})
+
+
+@login_required
+def new_ticket_form(request):
+    form = TicketForm()
+    return render(request,  "uts/new-ticket.html", context={"form": form})
