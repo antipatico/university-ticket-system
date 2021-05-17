@@ -187,3 +187,9 @@ CRISPY_FAIL_SILENTLY = not DEBUG
 UTS = {
     'MAX_ATTACHMENT_FILE_SIZE': 10 * 1024 * 1024,
 }
+
+#if DEBUG:
+#    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25

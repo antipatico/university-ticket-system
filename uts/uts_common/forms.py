@@ -34,7 +34,6 @@ class ProfileSettingsForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Salva'))
 
 
-
 class TicketForm(forms.Form):
     owner = forms.ChoiceField(label="Crea come")
     name = forms.CharField(label="Titolo", widget=forms.TextInput())
