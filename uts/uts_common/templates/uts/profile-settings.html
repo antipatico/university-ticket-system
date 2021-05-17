@@ -1,0 +1,18 @@
+{% extends "uts/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% if saveSuccess %}
+<div class="alert alert-success mb-3" role="alert">
+  <strong>Successo!</strong><br/>
+  Impostazioni modificate con successo!
+</div>
+  {% endif %}
+  <div class="row">
+    <div class="col-12">
+      <p></p>
+      <h4>Impostazioni Utente</h4>
+        {% crispy form %}
+    </div>
+  </div>
+{% endblock %}

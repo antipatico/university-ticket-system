@@ -3,6 +3,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, Div
 from django.utils import timezone
+from uts_common.models import Profile
 from django.utils.datetime_safe import datetime
 
 
@@ -15,6 +16,23 @@ class LoginForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Login'))
+
+
+class ProfileSettingsForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = ["email_notifications"]
+        labels = {
+            "email_notifications": "Notifiche via email"
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Salva'))
+
 
 
 class TicketForm(forms.Form):

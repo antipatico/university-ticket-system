@@ -65,3 +65,14 @@ def new_ticket_form(request):
     else:
         form = TicketForm(user=request.user)
     return render(request, "uts/new-ticket.html", context={"form": form})
+
+
+@login_required
+def profile_settings_form(request):
+    if request.POST:
+        form = ProfileSettingsForm(request.POST, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+        return render(request, "uts/profile-settings.html", context={"saveSuccess": True, "form": ProfileSettingsForm(instance=request.user.profile)})
+    form = ProfileSettingsForm(instance=request.user.profile)
+    return render(request, "uts/profile-settings.html", context={"form": form})

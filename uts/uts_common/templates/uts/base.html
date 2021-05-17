@@ -34,7 +34,7 @@
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="{% url 'uts_common:new_ticket' %}">New ticket...</a></li>
           <li><a class="dropdown-item" href="#">My organizations</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
+          <li><a class="dropdown-item" href="{% url 'uts_common:profile_settings' %}">Settings</a></li>
           <li><hr class="dropdown-divider"></li>
           {% if user.is_staff %}
           <li><a class="dropdown-item text-danger" href="{% url 'admin:index' %}"><strong>Administration Panel</strong></a></li>
