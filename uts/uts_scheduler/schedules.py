@@ -34,23 +34,23 @@ def send_email_notification(event_id):
     ticket = event.ticket
     subscribers = ticket.subscribers.filter(profile__email_notifications=True)
     actions = {
-        TicketStatus.OPEN: "aperto",
-        TicketStatus.CLOSED: "chiuso",
-        TicketStatus.DUPLICATE: "marcato come duplicato",
-        TicketStatus.ESCALATION: "trasferito la proprietà",
-        TicketStatus.NOTE: "aggiunto una nota",
-        TicketStatus.INFO_NEEDED: "richiesto maggiori informazioni",
-        TicketStatus.ANSWER: "risposto"
+        TicketStatus.OPEN: "aperto il",
+        TicketStatus.CLOSED: "chiuso il",
+        TicketStatus.DUPLICATE: "marcato come duplicato il",
+        TicketStatus.ESCALATION: "trasferito la proprietà del",
+        TicketStatus.NOTE: "aggiunto una nota al",
+        TicketStatus.INFO_NEEDED: "richiesto maggiori informazioni per il",
+        TicketStatus.ANSWER: "risposto al"
     }
-    url="https://qaticket.ing.unimore.it/"
+    url = "https://qaticket.ing.unimore.it/"
     ticket_url=f"{url}{reverse('uts_common:ticket_details', args=(ticket.id,))}"
     subject = f"[QATicket] Nuovo evento per {ticket.name} #{ticket.id}"
-    message = f"{owner} ha {actions[event.status]} al ticket.\n" \
+    message = f"{owner} ha {actions[event.status]} ticket.\n" \
               f"Visita {ticket_url} per avere più informazioni."
     html_message = "<!DOCTYPE html5>" \
                    "<html>" \
                    f"<body><h1><a href='{url}'>QATicket</a></h1>" \
-                   f"<p><strong>{owner}</strong> ha {actions[event.status]} al ticket #{ticket.id}: <a href='{ticket_url}'>{ticket.name}</a></p>" \
+                   f"<p><strong>{owner}</strong> ha {actions[event.status]} ticket #{ticket.id}: <a href='{ticket_url}'>{ticket.name}</a></p>" \
                    f"<p><pre>{event.info if event.status not in [TicketStatus.DUPLICATE, TicketStatus.ESCALATION] else ''}</pre></p>" \
                    "<footer><small>Email inviata automaticamente, per non ricevere più email smetti di seguire il ticket o cambia le impostazioni.</small></footer>" \
                    f"</body>" \

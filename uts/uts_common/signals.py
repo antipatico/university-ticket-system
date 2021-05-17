@@ -1,6 +1,8 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from django.utils import timezone
+from django_q.tasks import schedule
+
 from uts_common.models import *
 
 # https://docs.djangoproject.com/en/3.1/topics/signals/#connecting-receiver-functions
@@ -19,6 +21,9 @@ def ticket_event_post_save(sender, instance, created, **kwargs):
     if created:
         instance.ticket.ts_last_modified = timezone.now()
         instance.ticket.save()
+        schedule('uts_scheduler.schedules.send_email_notification',
+                 instance.id,
+                 schedule_type='O')
 
 
 @receiver(pre_delete, sender=TicketEventAttachment, dispatch_uid="ticket_event_attachment_pre_delete")
