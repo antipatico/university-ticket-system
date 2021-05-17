@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.utils.html import escape
 
 from uts_common.models import *
 
@@ -42,7 +43,7 @@ def send_email_notification(event_id):
         TicketStatus.INFO_NEEDED: "richiesto maggiori informazioni per il",
         TicketStatus.ANSWER: "risposto al"
     }
-    url = "https://qaticket.ing.unimore.it/"
+    url = "https://qaticket.ing.unimore.it"
     ticket_url=f"{url}{reverse('uts_common:ticket_details', args=(ticket.id,))}"
     subject = f"[QATicket] Nuovo evento per {ticket.name} #{ticket.id}"
     message = f"{owner} ha {actions[event.status]} ticket.\n" \
@@ -50,8 +51,8 @@ def send_email_notification(event_id):
     html_message = "<!DOCTYPE html5>" \
                    "<html>" \
                    f"<body><h1><a href='{url}'>QATicket</a></h1>" \
-                   f"<p><strong>{owner}</strong> ha {actions[event.status]} ticket #{ticket.id}: <a href='{ticket_url}'>{ticket.name}</a></p>" \
-                   f"<p><pre>{event.info if event.status not in [TicketStatus.DUPLICATE, TicketStatus.ESCALATION] else ''}</pre></p>" \
+                   f"<p><strong>{owner}</strong> ha {actions[event.status]} ticket #{ticket.id}: <a href='{ticket_url}'>{escape(ticket.name)}</a></p>" \
+                   f"<p><pre>{escape(event.info) if event.status not in [TicketStatus.DUPLICATE, TicketStatus.ESCALATION] else ''}</pre></p>" \
                    "<footer><small>Email inviata automaticamente, per non ricevere più email smetti di seguire il ticket o cambia le impostazioni.</small></footer>" \
                    f"</body>" \
                    "</html>"
