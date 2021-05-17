@@ -14,13 +14,24 @@
 {% block pagescripts %}
 <script type="text/javascript">
   const ScheduleApp = {
-      data() {
+    data() {
         return {
-            scheduled: false
+            scheduled: {{form.scheduled.value|default_if_none:"false"|lower}},
+
         }
-    },
+    }
   }
-  const app = Vue.createApp(ScheduleApp);
-  app.mount("#scheduleApp");
+  const app = Vue.createApp(ScheduleApp).mount("#scheduleApp");
+
+  $("#createTicket").click((e) => {
+    if(app.scheduled) {
+      let date = $("#scheduleDate").val();
+      let time = $("#scheduleTime").val();
+      if(date !== "" && time !== "") {
+        let datetime = new Date(date + " " + time);
+        $("#scheduleDateTime").val(datetime.toISOString());
+      }
+    }
+  })
 </script>
 {% endblock %}
