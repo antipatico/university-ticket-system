@@ -10,3 +10,17 @@
     </div>
   </div>
 {% endblock %}
+
+{% block pagescripts %}
+<script type="text/javascript">
+  const ScheduleApp = {
+      data() {
+        return {
+            scheduled: false
+        }
+    },
+  }
+  const app = Vue.createApp(ScheduleApp);
+  app.mount("#scheduleApp");
+</script>
+{% endblock %}
