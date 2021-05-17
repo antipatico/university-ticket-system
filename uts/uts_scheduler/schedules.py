@@ -19,3 +19,7 @@ def add_ticket_event(ticket_id, owner_id, event_status, info=None, duplicate_id=
                                  duplicate_id=duplicate_id,
                                  new_owner_email=new_owner_email,
                                  attachments=attachments)
+
+
+def new_ticket(user_id, owner_id, name, tags=[]):
+    return Ticket.create(user_id, owner_id, name, tags)

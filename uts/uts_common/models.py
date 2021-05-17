@@ -70,6 +70,27 @@ class Ticket(models.Model):
         elif type(self.owner) is Organization:
             return self.owner.id == owner.id
 
+    @classmethod
+    @transaction.atomic
+    def create(cls, user_id, owner_id, name, tags=[]):
+        user = User.objects.get(pk=user_id)
+        owner = Owner.objects.get(pk=owner_id)
+        if type(owner) is Individual and owner.id != user.individual.id:
+            raise ValueError("Non puoi creare un ticket come qualcun altro")
+        if type(owner) is Organization and owner.admin.id != user.id and user not in owner.members.all():
+            raise ValueError("Non puoi creare un ticket per un organizzazione di cui non fai parte")
+        tags = [Tag.objects.get_or_create(tag=tag)[0] for tag in tags]
+        ticket = Ticket.objects.create(owner=owner, name=name)
+        ticket.tags.set(tags)
+        event = TicketEvent.objects.create(ticket=ticket, owner=user.individual, status=TicketStatus.OPEN)
+        if type(owner) is Organization:
+            ticket.subscribers.set(owner.members.all())
+            ticket.subscribers.add(owner.admin)
+        ticket.subscribers.add(user)
+        ticket.save()
+        event.save()
+        return ticket.id
+
     def __str__(self):
         return f"{self.name}"
 

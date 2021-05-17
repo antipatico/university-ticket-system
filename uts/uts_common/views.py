@@ -3,6 +3,8 @@ from django.db import transaction
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout as auth_logout, authenticate, login
+from django_q.tasks import schedule
+
 from uts_common.decorators import next_redirect
 from uts_common.forms import *
 from uts_common.models import *
@@ -43,31 +45,23 @@ def ticket_details(request, pk):
 
 
 @login_required
-@transaction.atomic
 def new_ticket_form(request):
     if request.POST:
         form = TicketForm(request.POST, user=request.user)
         if form.is_valid():
-            owner = get_object_or_404(Owner.objects.all(), pk=int(form.cleaned_data["owner"]))
-            """
-            # The following checks are not needed since django's form will check for the choices on post.
-            if type(owner) is Individual and owner.id != request.user.individual.id:
-                form.add_error("owner", "Non puoi creare un ticket come qualcun altro")
-            elif owner.admin.id != request.user.id and request.user not in owner.members:
-                form.add_error("owner", "Non puoi creare un ticket per un organizzazione di cui non fai parte")
-            """
+            owner_id = int(form.cleaned_data["owner"])
             name = form.cleaned_data["name"]
-            tags = [Tag.objects.get_or_create(tag=tag)[0] for tag in form.cleaned_data["tags"]]
-            ticket = Ticket.objects.create(owner=owner, name=name)
-            ticket.tags.set(tags)
-            ticket.save()
-            event = TicketEvent.objects.create(ticket=ticket, owner=request.user.individual, status=TicketStatus.OPEN)
-            event.save()
-            if type(owner) is Organization:
-                ticket.subscribers.set(owner.members.all())
-                ticket.subscribers.add(owner.admin)
-
-            return redirect("uts_common:ticket_details", ticket.id)
+            tags = form.cleaned_data["tags"]
+            scheduled = form.cleaned_data["scheduled"]
+            if scheduled:
+                scheduled_datetime = form.cleaned_data["scheduled_datetime"]
+                schedule('uts_scheduler.schedules.new_ticket',
+                         request.user.id, owner_id, name, tags=tags,
+                         next_run=scheduled_datetime,
+                         schedule_type='O')
+                return render(request, "uts/new-ticket.html", context={"scheduleSuccess": True, "form": TicketForm(user=request.user)})
+            ticket_id = Ticket.create(request.user.id, owner_id, name, tags)
+            return redirect("uts_common:ticket_details", ticket_id)
     else:
         form = TicketForm(user=request.user)
     return render(request, "uts/new-ticket.html", context={"form": form})

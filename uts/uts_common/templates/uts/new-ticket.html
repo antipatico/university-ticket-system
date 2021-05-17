@@ -2,6 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+  {% if scheduleSuccess %}
+<div class="alert alert-success mb-3" role="alert">
+  <strong>Successo!</strong><br/>
+  Creazione del ticket programmata con successo!
+</div>
+  {% endif %}
   <div class="row">
     <div class="col-12">
       <p></p>
