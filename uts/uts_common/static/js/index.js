@@ -36,26 +36,13 @@ const TicketsApp = {
         },
     }
 }
-const app = Vue.createApp(TicketsApp);
-
-app.mixin({
+const app = Vue.createApp(TicketsApp).mixin({
+    computed: {
+        QACommon() { return QACommon}
+    },
     methods: {
-        getIconClass(status) {
-            return QACommon.getIconClass(status);
-        },
-        getEventMessage(status) {
-            return QACommon.getEventMessage(status);
-        },
-        dateToString(date) {
-            return QACommon.dateToString(date);
-        },
-        dateDiffFromNow(date) {
-            return QACommon.dateDiffFromNow(date);
-        },
         openTicketDetails(ticketId) {
             window.location.href = TICKET_DETAILS_URL + ticketId
-        },
+        }
     }
-});
-
-app.mount("#ticketsApp");
+}).mount("#ticketsApp");

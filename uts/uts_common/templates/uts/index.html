@@ -14,13 +14,13 @@
         <div class="col-sm-12 col-md-6 col-lg-4 mb-4" v-for="ticket in recentTickets">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title bi click" :class="getIconClass(ticket.status)"
+              <h5 class="card-title bi click" :class="QACommon.getIconClass(ticket.status)"
                 v-on:click="openTicketDetails(ticket.id)">
                 &nbsp;$% ticket.name %$</h5>
-              <h6 class="card-subtitle mb-2 text-muted">$% dateDiffFromNow(ticket.ts_last_modified) %$</h6>
+              <h6 class="card-subtitle mb-2 text-muted">$% QACommon.dateDiffFromNow(ticket.ts_last_modified) %$</h6>
               <ul class="list-group list-group-flush">
-                <li class="list-group-item bi" :class="getIconClass(event.status)" v-for="event in ticket.events">
-                  &nbsp;$% event.owner.name + ' ' + getEventMessage(event.status) %$</li>
+                <li class="list-group-item bi" :class="QACommon.getIconClass(event.status)" v-for="event in ticket.events">
+                  &nbsp;$% event.owner.name + ' ' + QACommon.getEventMessage(event.status) %$</li>
               </ul>
             </div>
           </div>
