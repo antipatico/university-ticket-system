@@ -19,7 +19,7 @@ const TicketsApp = {
         }
     },
     mounted() {
-        $.getJSON(API_TICKETS_URL + TICKET_ID + "/", this.postProcessTicket);
+        this.ticketDetailTimer = QACommon.interval(this.getTicketDetail, 10 * 1000);
     },
     created() {
         $("#ticketsApp").show();
@@ -29,6 +29,10 @@ const TicketsApp = {
         QACommon() { return QACommon}
     },
     methods: {
+        getTicketDetail() {
+            $.getJSON(API_TICKETS_URL + TICKET_ID + "/", this.postProcessTicket);
+        },
+
         postProcessTicket(data) {
             let owner = data.owner;
             data.events.forEach((e) => {
