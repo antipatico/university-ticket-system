@@ -45,6 +45,11 @@ def ticket_details(request, pk):
 
 
 @login_required
+def organizations_list(request):
+    return render(request, "uts/organizations-list.html")
+
+
+@login_required
 def new_ticket_form(request):
     if request.POST:
         form = TicketForm(request.POST, user=request.user)

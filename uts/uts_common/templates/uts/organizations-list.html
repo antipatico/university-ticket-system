@@ -1,0 +1,57 @@
+{% extends "uts/base.html" %}
+{% load static %}
+{% block content %}
+<div id="organizationsApp" style="display:none">
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4 class="card-title mb-3 bi bi-hash">Organizzazioni amministrate</h4>
+      <div class="mb-3 mt-3 w-100" v-if="administeredOrganizations == null">
+        <img src="{% static 'images/loading.gif' %}" class="loadingGif" />
+      </div>
+      <div class="row" v-else>
+        <div class="col-sm-12 col-md-6 col-lg-4 mb-4" v-for="organization in administeredOrganizations">
+          <div class="card">
+            <div class="card-header">
+              <div class="row flex">
+                <div class="col-11 fw-bold bi bi-people-fill flex">&nbsp;$% organization.name %$</div>
+                <div class="col-1 flex"><i class="bi bi-plus-circle click text-success"></i></div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="list-group">
+                <li class="list-group-item">$% organization.admin.full_name %$ <small class="text-muted small fw-light">[admin]</small></li>
+                <li class="list-group-item" v-for="user in organization.members">$% user.full_name %$</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4 class="card-title mb-3 bi bi-currency-dollar">Organizzazioni di cui fai parte</h4>
+      <div class="mb-3 mt-3 w-100" v-if="joinedOrganizations == null">
+        <img src="{% static 'images/loading.gif' %}" class="loadingGif" />
+      </div>
+      <div class="row" v-else>
+        <div class="col-sm-12 col-md-6 col-lg-4 mb-4" v-for="organization in joinedOrganizations">
+          <div class="card">
+            <div class="card-header fw-bold bi bi-people-fill">&nbsp;$% organization.name %$</div>
+            <div class="card-body">
+              <ul class="list-group">
+                <li class="list-group-item">$% organization.admin.full_name %$ <small class="text-muted small fw-light">[admin]</small></li>
+                <li class="list-group-item" v-for="user in organization.members">$% user.full_name %$</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block pagescripts %}
+<script src="{% static 'js/organizations.js' %}"></script>
+{% endblock %}
