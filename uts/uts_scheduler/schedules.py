@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils.html import escape
+from django.conf import settings
 
 from uts_common.models import *
 
@@ -57,4 +58,4 @@ def send_email_notification(event_id):
                    f"</body>" \
                    "</html>"
     for subscriber in subscribers:
-        send_mail(subject, message, from_email="qaticket@uts.it", recipient_list=[subscriber.email], html_message=html_message)
+        send_mail(subject, message, from_email=settings.EMAIL_FROM, recipient_list=[subscriber.email], html_message=html_message)

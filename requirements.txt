@@ -6,3 +6,4 @@ crispy-bootstrap5
 django-q
 redis
 croniter
+django-ses

@@ -17,7 +17,6 @@ import django.db.models
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = '+#gwsjo&9=-x4uu*vg4qwi%sh=+s5i5%c3u%&ug2t!s!mv)3vj'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -86,7 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'uts.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -96,7 +93,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -116,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -130,7 +125,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -140,8 +134,9 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 # Django-Q scheduler options
+# NOTE: you need redis up and working to be able to run the scheduler
+# Run the scheduler using ./manage.py qcluster
 Q_CLUSTER = {
     'name': 'uts',
     'workers': 8,
@@ -188,8 +183,22 @@ UTS = {
     'MAX_ATTACHMENT_FILE_SIZE': 10 * 1024 * 1024,
 }
 
+# Email settings
+# By default emails are sent using postfix WITHOUT authentication (relaying).
+# You can edit the settings below providing a valid Amazon AWS key to send
+# properly authenticated emails.
+
+# print mail to console in debug mode
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+EMAIL_FROM = "postfix@qaticket.ing.unimore.it"
+
+# Uncomment the lines below to send emails using AWS SES
+# EMAIL_BACKEND = 'django_ses.SESBackend'
+# AWS_ACCESS_KEY_ID = 'YOUR-ACCESS-KEY-ID'
+# AWS_SECRET_ACCESS_KEY = 'YOUR-SECRET-ACCESS-KEY'
+
+# Uncomment the lines below to send emails using postfix
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
