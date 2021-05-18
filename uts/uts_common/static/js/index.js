@@ -14,7 +14,7 @@ const TicketsApp = {
         $("#ticketsApp").show();
     },
     mounted() {
-        this.recentTicketsTimer = QACommon.interval(this.getRecentTickets, 20 * 1000);
+        this.recentTicketsTimer = QACommon.interval(this.getRecentTickets, 10 * 1000);
         this.ownedTicketsTimer = QACommon.interval(this.getOwnedTickets, 5 * 60 * 1000);
         this.subscribedTicketsTimer = QACommon.interval(this.getSubscribedTickets, (5 * 60 * 1000) + 200);
     },
