@@ -164,3 +164,25 @@ class OrganizationsView(AuthenticatedViewSet):
     def list(self, request):
         serializer = OrganizationSerializer(request.user.all_organizations, user=request.user, many=True)
         return Response(serializer.data)
+
+    @transaction.atomic
+    def partial_update(self, request, pk=None):
+        organization = get_object_or_404(Organization.objects.all(), pk=pk)
+        if request.user.id != organization.admin.id:
+            return Response({"detail": "operation not allowed, you need to the organization's admin"}, status=status.HTTP_403_FORBIDDEN)
+        new_user_email = request.data.get("new_user_email", None)
+        user = get_object_or_404(User.objects.all(), email=new_user_email)
+        if user in organization.members.all() or user.id == organization.admin.id:
+            return Response({}, status=status.HTTP_200_OK)
+        organization.members.add(user)
+        return Response({}, status=status.HTTP_201_CREATED)
+
+    @transaction.atomic
+    def destroy(self, request, pk=None):
+        organization = get_object_or_404(Organization.objects.all(), pk=pk)
+        if request.user.id != organization.admin.id:
+            return Response({"detail": "operation not allowed, you need to the organization's admin"}, status=status.HTTP_403_FORBIDDEN)
+        delete_user_email = request.data.get("new_user_email", None)
+        user = get_object_or_404(User.objects.all(), email=delete_user_email)
+        organization.members.remove(user)
+        return Response({}, status=status.HTTP_200_OK)
