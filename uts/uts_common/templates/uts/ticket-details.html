@@ -22,9 +22,7 @@
               </div>
               <div class="card-body"
                    v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
-                <pre>
-                $% event.info %$
-                </pre>
+                <pre>$% event.info %$</pre>
                 <div class="m-3" v-if="event.attachments.length > 0">
                   <strong>Allegati</strong>
                   <ul class="list-group small" >
