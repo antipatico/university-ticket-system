@@ -1,15 +1,12 @@
-from datetime import timedelta
-
-from django.utils import timezone, dateparse
 from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.db import transaction
+from django.utils import dateparse
 from django_q.tasks import schedule
+from rest_framework import status
 from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.viewsets import ViewSet
 
 from uts_rest.serializers import *
@@ -182,7 +179,7 @@ class OrganizationsView(AuthenticatedViewSet):
         organization = get_object_or_404(Organization.objects.all(), pk=pk)
         if request.user.id != organization.admin.id:
             return Response({"detail": "operation not allowed, you need to the organization's admin"}, status=status.HTTP_403_FORBIDDEN)
-        delete_user_email = request.data.get("new_user_email", None)
+        delete_user_email = request.data.get("delete_user_email", None)
         user = get_object_or_404(User.objects.all(), email=delete_user_email)
         organization.members.remove(user)
         return Response({}, status=status.HTTP_200_OK)

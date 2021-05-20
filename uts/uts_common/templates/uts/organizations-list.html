@@ -61,7 +61,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" v-if="userToRemove != null && modalOrganization != null">
-          <p>Stai pre rimuovere <strong>$% userToRemove.full_name %$</strong> dall'organizzazione <strong>$% modalOrganization.name %$</strong>, sei sicuro?</p>
+          <p>Stai per rimuovere <strong>$% userToRemove.full_name %$</strong> dall'organizzazione <strong>$% modalOrganization.name %$</strong>, sei sicuro?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
@@ -79,17 +79,18 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" v-if="modalOrganization != null">
+          <div class="alert alert-danger mb-3" role="alert" v-if="addUserError != null">
+            <strong>Errore:</strong> utente non trovato
+          </div>
           <p>Aggiungi un utente all'organizzazione <strong>$% modalOrganization.name %$</strong></p>
-          <form>
-            <div class="mb-3">
-              <label for="addUserEmail" class="col-form-label">Email:</label>
-              <input type="text" class="form-control" id="addUserEmail" placeholder="mario.rossi@unimore.it">
-            </div>
-          </form>
+          <div class="mb-3">
+            <label for="addUserEmail" class="col-form-label">Email:</label>
+            <input type="text" class="form-control" id="addUserEmail" placeholder="mario.rossi@unimore.it" v-model="newUserEmail">
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button type="button" class="btn btn-success">Aggiungi</button>
+          <button type="button" class="btn btn-success" v-on:click="addUser">Aggiungi</button>
         </div>
       </div>
     </div>
