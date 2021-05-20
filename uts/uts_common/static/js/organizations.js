@@ -5,6 +5,8 @@ const OrganizationsApp = {
             organizations: null,
             administeredOrganizations: null,
             joinedOrganizations: null,
+            userToRemove: null,
+            modalOrganization: null,
         };
     },
     computed: {
@@ -24,6 +26,20 @@ const OrganizationsApp = {
             this.organizations = data;
             this.administeredOrganizations = data.filter(org => org.administered);
             this.joinedOrganizations = data.filter(org => !org.administered);
+        },
+        confirmRemoveUser(user, organization) {
+            this.userToRemove = user;
+            this.modalOrganization = organization;
+            $("#modalRemoveUser").modal("show");
+        },
+        removeUser() {
+            if (this.userToRemove != null && this.modalOrganization != null) {
+                $("#modalRemoveUser").modal("hide");
+            }
+        },
+        addUserModal(organization) {
+            this.modalOrganization = organization;
+            $("#modalAddUser").modal("show");
         }
     }
 }

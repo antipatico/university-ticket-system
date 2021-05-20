@@ -12,15 +12,17 @@
         <div class="col-sm-12 col-md-6 col-lg-4 mb-4" v-for="organization in administeredOrganizations">
           <div class="card">
             <div class="card-header">
-              <div class="row flex">
-                <div class="col-11 fw-bold bi bi-people-fill flex">&nbsp;$% organization.name %$</div>
-                <div class="col-1 flex"><i class="bi bi-plus-circle click text-success"></i></div>
+              <div class="row">
+                <div class="col-10 fw-bold bi bi-people-fill">&nbsp;$% organization.name %$</div>
+                <div class="col-2"><i class="bi bi-plus-circle click text-success" v-on:click="addUserModal(organization)"></i></div>
               </div>
             </div>
             <div class="card-body">
               <ul class="list-group">
-                <li class="list-group-item">$% organization.admin.full_name %$ <small class="text-muted small fw-light">[admin]</small></li>
-                <li class="list-group-item" v-for="user in organization.members">$% user.full_name %$</li>
+                <li class="list-group-item"><i class="bi bi-star text-warning"></i>&nbsp;$% organization.admin.full_name %$</li>
+                <li class="list-group-item" v-for="user in organization.members">
+                  <i class="bi bi-x-circle click text-danger" v-on:click="confirmRemoveUser(user, organization)"></i>&nbsp;$% user.full_name %$
+                </li>
               </ul>
             </div>
           </div>
@@ -41,7 +43,7 @@
             <div class="card-header fw-bold bi bi-people-fill">&nbsp;$% organization.name %$</div>
             <div class="card-body">
               <ul class="list-group">
-                <li class="list-group-item">$% organization.admin.full_name %$ <small class="text-muted small fw-light">[admin]</small></li>
+                <li class="list-group-item"><i class="bi bi-star text-warning"></i>&nbsp;$% organization.admin.full_name %$</li>
                 <li class="list-group-item" v-for="user in organization.members">$% user.full_name %$</li>
               </ul>
             </div>
@@ -50,7 +52,52 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modalRemoveUser" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Sei sicuro di voler procedere?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" v-if="userToRemove != null && modalOrganization != null">
+          <p>Stai pre rimuovere <strong>$% userToRemove.full_name %$</strong> dall'organizzazione <strong>$% modalOrganization.name %$</strong>, sei sicuro?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-danger" v-on:click="removeUser()">Rimuovi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalAddUser" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Aggiungi un utente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" v-if="modalOrganization != null">
+          <p>Aggiungi un utente all'organizzazione <strong>$% modalOrganization.name %$</strong></p>
+          <form>
+            <div class="mb-3">
+              <label for="addUserEmail" class="col-form-label">Email:</label>
+              <input type="text" class="form-control" id="addUserEmail" placeholder="mario.rossi@unimore.it">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-success">Aggiungi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+
 {% endblock %}
 {% block pagescripts %}
 <script src="{% static 'js/organizations.js' %}"></script>
