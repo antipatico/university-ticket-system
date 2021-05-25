@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'uts_shibboleth',
     'uts_rest',
     'uts_scheduler',
+    'uts_report',
 
     'django.contrib.admin',
     'django.contrib.auth',

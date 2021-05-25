@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('shibboleth/', include('uts_shibboleth.urls', namespace="uts_shibboleth")),
     path('api/v1/', include('uts_rest.urls', namespace="uts_rest")),
-    path('scheduler/', include('uts_scheduler.urls', namespace="uts_scheduler")),
+    path('report/', include('uts_report.urls', namespace="uts_report")),
     path('', include('uts_common.urls', namespace="uts_common")),
 ]
 if settings.DEBUG:
