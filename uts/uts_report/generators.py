@@ -75,16 +75,22 @@ def add_ticket_to_document(ticket, document, base_url, add_title=True):
             for attachment in event.attachments.all():
                 p = document.add_paragraph(style="List Bullet")
                 hyperlink = add_hyperlink(p, f"{base_url}{attachment.file}", attachment.name)
-
     document.add_page_break()
 
 
 # Generates a docx in memory and returns a stream of bytes which is the docx generated
 def document_from_ticket(ticket, base_url):
+    return document_from_many_tickets([ticket], f"{ticket.name}", base_url, add_title=False)
+
+
+# Generates a docx in memory from many tickets
+def document_from_many_tickets(tickets, title, base_url, add_title=True):
     document = Document()
-    document.add_heading(f"{ticket.name}", 0)
+    document.add_heading(f"{title}", 0)
     memory_stream = BytesIO()
-    add_ticket_to_document(ticket, document, base_url, add_title=False)
+    for ticket in tickets:
+        add_ticket_to_document(ticket, document, base_url, add_title=add_title)
     document.save(memory_stream)
     memory_stream.seek(0)  # We need to get back at the start of the stream
     return memory_stream
+
