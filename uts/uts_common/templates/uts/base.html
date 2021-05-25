@@ -78,7 +78,7 @@
 {% block defaultscripts %}
   {% csrf_token %}
   <script>
-      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').valuticket_ide;
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   </script>
   {% url "uts_common:ticket_details" 0 as ticket_details_url %}
 <script type="text/javascript">

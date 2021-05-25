@@ -180,3 +180,14 @@ class Profile(models.Model):
 
 User.full_name = property(lambda u: f"{u.username}" if not u.first_name else (f"{u.first_name}" if not u.last_name else f"{u.first_name} {u.last_name}"))
 User.all_organizations = property(lambda u: u.organizations.all().union(u.administered_organizations.all()))
+
+
+TicketActions = {
+    TicketStatus.OPEN: "aperto il",
+    TicketStatus.CLOSED: "chiuso il",
+    TicketStatus.DUPLICATE: "marcato come duplicato il",
+    TicketStatus.ESCALATION: "trasferito la proprietà del",
+    TicketStatus.NOTE: "aggiunto una nota al",
+    TicketStatus.INFO_NEEDED: "richiesto maggiori informazioni per il",
+    TicketStatus.ANSWER: "risposto al"
+}
