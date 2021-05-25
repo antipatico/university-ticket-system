@@ -81,3 +81,8 @@ def profile_settings_form(request):
         return render(request, "uts/profile-settings.html", context={"saveSuccess": True, "form": ProfileSettingsForm(instance=request.user.profile)})
     form = ProfileSettingsForm(instance=request.user.profile)
     return render(request, "uts/profile-settings.html", context={"form": form})
+
+
+@login_required
+def generate_ticket_report(request, pk):
+    ticket = get_object_or_404(Ticket.objects.all(), pk=pk)

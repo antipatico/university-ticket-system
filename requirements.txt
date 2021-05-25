@@ -7,3 +7,4 @@ django-q
 redis
 croniter
 django-ses
+python-docx

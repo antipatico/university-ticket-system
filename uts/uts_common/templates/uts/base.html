@@ -30,17 +30,17 @@
           <img src="{% static 'images/default-avatar.png' %}" alt="{{ user.full_name }}" class="rounded-circle border" width="32" height="32">
         </a>
         <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-          <li><span class="dropdown-item">Signed in as <strong>{{ user.full_name }}</strong></span></li>
+          <li><span class="dropdown-item">Benvenuto <strong>{{ user.full_name }}</strong></span></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{% url 'uts_common:new_ticket' %}">New ticket...</a></li>
-          <li><a class="dropdown-item" href="{% url 'uts_common:organizations_list' %}">My organizations</a></li>
-          <li><a class="dropdown-item" href="{% url 'uts_common:profile_settings' %}">Settings</a></li>
+          <li><a class="dropdown-item" href="{% url 'uts_common:new_ticket' %}">Nuovo ticket...</a></li>
+          <li><a class="dropdown-item" href="{% url 'uts_common:organizations_list' %}">Le mie Organizzazioni</a></li>
+          <li><a class="dropdown-item" href="{% url 'uts_common:profile_settings' %}">Impostazioni</a></li>
           <li><hr class="dropdown-divider"></li>
           {% if user.is_staff %}
-          <li><a class="dropdown-item text-danger" href="{% url 'admin:index' %}"><strong>Administration Panel</strong></a></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'admin:index' %}"><strong>Pannello di Amministrazione</strong></a></li>
           <li><hr class="dropdown-divider"></li>
           {% endif %}
-          <li><a class="dropdown-item" href="{% url 'uts_common:logout' %}">Sign out</a></li>
+          <li><a class="dropdown-item" href="{% url 'uts_common:logout' %}">Esci</a></li>
         </ul>
       </div>
     {% else %}

@@ -10,6 +10,9 @@
       <div class="mb-3 mt-3 w-100" v-if="recentTickets == null">
         <img src="{% static 'images/loading.gif' %}" class="loadingGif" />
       </div>
+      <div v-else-if="recentTickets.length < 1">
+        <span class="text-muted small">Nessuna</span>
+      </div>
       <div class="row" v-else>
         <div class="col-sm-12 col-md-6 col-lg-4 mb-4" v-for="ticket in recentTickets">
           <div class="card">
@@ -37,6 +40,9 @@
           <div class="w-100 mb-3" v-if="ownedTickets == null">
             <img src="{% static 'images/loading.gif' %}" class="loadingGif"/>
           </div>
+          <div v-else-if="ownedTickets.length < 1">
+            <span class="text-muted small">Nessuno</span>
+          </div>
           <div v-else>
             <ul-tickets :tickets="ownedTickets"></ul-tickets>
           </div>
@@ -49,6 +55,9 @@
           <h4 class="card-title mb-3">I Ticket che Seguo</h4>
           <div class="w-100 mb-3" v-if="subscribedTickets == null">
             <img src="{% static 'images/loading.gif' %}" class="loadingGif"/>
+          </div>
+          <div v-else-if="subscribedTickets.length < 1">
+            <span class="text-muted small">Nessuno</span>
           </div>
           <div v-else>
             <ul-tickets :tickets="subscribedTickets" show-owners></ul-tickets>
