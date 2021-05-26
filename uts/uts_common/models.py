@@ -105,7 +105,7 @@ class TicketEvent(models.Model):
 
     @classmethod
     @transaction.atomic
-    def add_event(cls, ticket_id, owner_id, event_status, info=None, duplicate_id=None, new_owner_email=None, attachments=[]):
+    def add_event(cls, ticket_id, owner_id, event_status, info="", duplicate_id=None, new_owner_email=None, attachments=[]):
         ticket = Ticket.objects.get(pk=ticket_id)
         owner = Owner.objects.get(pk=owner_id)
         if type(event_status) != TicketStatus:
