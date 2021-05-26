@@ -1,0 +1,41 @@
+{% extends "uts/base.html" %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header"><h4>Generazione Report</h4></div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 mb-3">
+          <p>Pagina di esempio per la generazione di report <span class="text-muted">avanzati</span>, contenenti più ticket.</p>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header"><h5>Ticket chiusi</h5></div>
+            <div class="card-body">
+              <p>Genera un report di tutti i ticket chiusi.</p>
+              <a href="{% url "uts_report:generate_closed_tickets_report" %}" target="_blank"><button class="btn btn-primary w-100">Genera report .docx</button></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header"><h5>Ticket aperti quest'anno</h5></div>
+            <div class="card-body">
+              <p>Genera un report di tutti i ticket che sono stati aperti quest'anno.</p>
+              <a href="{% url "uts_report:generate_opened_lastyear_tickets_report" %}" target="_blank"><button class="btn btn-success w-100">Genera report .docx</button></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header"><h5>Ticket ancora aperti</h5></div>
+            <div class="card-body">
+              <p>Genera un report di tutti i ticket che sono stati aperti quest'anno <strong>che sono ancora aperti</strong>.</p>
+              <a href="{% url "uts_report:generate_opened_lastyear_stillopen_tickets_report" %}" target="_blank"><button class="btn btn-warning w-100">Genera report .docx</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

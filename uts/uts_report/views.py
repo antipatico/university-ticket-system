@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.conf import settings
 from django.db.models import Q
@@ -49,3 +49,8 @@ def generate_opened_lastyear_stillopen_tickets_report(request):
         Q(ts_closed=None))
     document_stream = document_from_many_tickets(tickets, "Ticket aperti quest'anno ancora aperti", request.build_absolute_uri(settings.MEDIA_URL))
     return DocxHttpResponse(document_stream, document_name=f"ticket-aperti-anno-corrente-ancora-aperti-report")
+
+
+@login_required
+def reports_example(request):
+    return render(request, "uts_report/reports-example.html")
