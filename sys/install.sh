@@ -15,13 +15,15 @@ source ./venv/bin/activate
 python3 -m pip install --upgrade pip wheel
 python3 -m pip install -r requirements.txt
 pushd uts
-./manage.py createscheduledjobs
-
+if [ ! -f db.sqlite3 ]; then
+  ./manage.py makemigrations uts_common
+  ./manage.py migrate
+  ./manage.py createscheduledjobs
+fi
 cat <<EOF
 
 Project dependencies installed under 'venv'!
 Enter the virtualenv using 'source ./venv/bin/activate'
-If it is the first time running the project, you need to generate the database using './manage.py migratedb'
 You can populate the db using with some test data using './manage.py populatedb'
 WARNING: the populatedb command will create some local users and an administrator account.
 
