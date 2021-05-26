@@ -76,9 +76,8 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        read_only_fields = fields = ['id', 'owner', 'status', 'name', 'description', 'events', 'tags', 'ts_open',
-                                     'ts_last_modified', 'ts_closed', 'is_closed', 'is_owned', 'is_subscribed',
-                                     'subscribers']
+        read_only_fields = fields = ['id', 'owner', 'status', 'name', 'events', 'tags', 'ts_open', 'ts_last_modified',
+                                     'ts_closed', 'is_closed', 'is_owned', 'is_subscribed', 'subscribers']
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
