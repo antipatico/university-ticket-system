@@ -58,7 +58,11 @@ const QACommon = {
         }
     },
     dateToString(date) {
-        return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+        let dateFormat = new Intl.DateTimeFormat('default', {weekday: 'long', day: 'numeric', month: 'long', year:'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'});
+        date = new Date(date);
+        let strDate = dateFormat.format(date);
+        strDate = strDate.replace(/\b\w/g, l => l.toUpperCase());// Capitalize the first letter
+        return strDate;
     },
     dateDiffFromNow(date) {
         let delta = new Date() - new Date(date); // difference between now and  the date passed in milliseconds

@@ -16,9 +16,15 @@
         <div class="row">
           <div class="col-lg-9 col-md-12 mb-3">
             <div class="card mb-3" v-for="event in ticket.events.slice().reverse()">
-              <div class="card-header bi" :class="QACommon.getIconClass(event.status)">
-                &nbsp;$% event.owner.name %$ $% QACommon.getEventMessage(event.status) %$ $%
-                QACommon.dateDiffFromNow(event.timestamp) %$
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-12">
+                    <small class="text-muted"> $% QACommon.dateToString(event.timestamp) %$</small>
+                  </div>
+                  <div class="col-12 bi" :class="QACommon.getIconClass(event.status)">
+                    &nbsp;$% event.owner.name %$ $% QACommon.getEventMessage(event.status) %$
+                  </div>
+                </div>
               </div>
               <div class="card-body"
                    v-if="event.status !== 'DUPLICATE' && event.status !== 'ESCALATION' && event.info.length > 0">
