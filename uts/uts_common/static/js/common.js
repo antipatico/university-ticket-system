@@ -30,13 +30,13 @@ const QACommon = {
             case "DUPLICATE":
                 return "ha marcato il ticket come duplicato"
             case "ESCALATION":
-                return "ha passato la proprietà del ticket"
+                return "ha trasferito la proprietà del ticket"
             case "NOTE":
-                return "ha aggiunto una nota"
+                return "ha aggiunto una nota al ticket"
             case "INFO_NEEDED":
                 return "ha richiesto informazioni aggiuntive"
             case "ANSWER":
-                return "ha risposto"
+                return "ha risposto al ticket"
         }
     },
     getStatusName(status) {
@@ -63,6 +63,11 @@ const QACommon = {
         let strDate = dateFormat.format(date);
         strDate = strDate.replace(/\b\w/g, l => l.toUpperCase());// Capitalize the first letter
         return strDate;
+    },
+    dateToStringNumeric(date) {
+        let dateFormat = new Intl.DateTimeFormat('default', {day: 'numeric', month: 'numeric', year:'numeric', hour: 'numeric', minute: 'numeric'});
+        date = new Date(date);
+        return dateFormat.format(date);
     },
     dateDiffFromNow(date) {
         let delta = new Date() - new Date(date); // difference between now and  the date passed in milliseconds

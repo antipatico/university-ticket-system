@@ -7,11 +7,17 @@
         <img src="{% static 'images/loading.gif' %}" class="loadingGif"/>
       </div>
       <div class="card-body" v-else>
-        <h3 class="card-title mb-1">
+        <h3 class="card-title mb-2">
           $% ticket.name %$ <span class="text-muted small">#$% ticket.id %$</span>
         </h3>
         <h6 class="card-subtitle mb-2 bi" :class="[QACommon.getIconClass(ticket.status),ticket.is_closed?'text-muted':'']">
-          &nbsp;$% QACommon.getStatusName(ticket.status) %$</h6>
+          &nbsp;$% QACommon.getStatusName(ticket.status) %$
+        </h6>
+        <h6 class="card-subtitle mb-3">
+          <i class="small bi bi-people text-warning" v-if="ticket.owner.type==='organization'"></i>
+          <i class="bi bi-star text-warning" v-else></i>
+          &nbsp;$% ticket.owner.name %$
+        </h6>
         <hr/>
         <div class="row">
           <div class="col-lg-9 col-md-12 mb-3">

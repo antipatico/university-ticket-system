@@ -14,8 +14,8 @@ const TicketListItem = {
       <span>{{ticket.owner.name}}</span>
     </div>
     <div class="col-xl-4 col-lg-5 col-md-12">
-       <small v-if="ticket.is_closed" class="text-muted">Chiuso {{QACommon.dateDiffFromNow(ticket.ts_closed)}}</small>
-       <small v-else>Creato {{QACommon.dateDiffFromNow(ticket.ts_open)}}</small>
+       <small v-if="ticket.is_closed" class="text-muted">Chiuso il {{QACommon.dateToStringNumeric(ticket.ts_closed)}}</small>
+       <small v-else>Creato il {{QACommon.dateToStringNumeric(ticket.ts_open)}}</small>
     </div>
   </div>
   <div class="row" v-else>
@@ -24,8 +24,8 @@ const TicketListItem = {
       <span v-else class="click bi" :class="QACommon.getIconClass(ticket.status)"  v-on:click="openTicketDetails(ticket.id)">&nbsp;<strong>{{ticket.name}}</strong></span>
     </div>
     <div class="col-xl-4 col-lg-12">
-       <small v-if="ticket.is_closed" class="text-muted">Chiuso {{QACommon.dateDiffFromNow(ticket.ts_closed)}}</small>
-       <small v-else>Creato {{QACommon.dateDiffFromNow(ticket.ts_open)}}</small>
+       <small v-if="ticket.is_closed" class="text-muted">Chiuso il {{QACommon.dateToStringNumeric(ticket.ts_closed)}}</small>
+       <small v-else>Creato il {{QACommon.dateToStringNumeric(ticket.ts_open)}}</small>
     </div>
   </div>
 </li>`,
