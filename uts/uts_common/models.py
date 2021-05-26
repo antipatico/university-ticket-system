@@ -29,14 +29,14 @@ class Individual(Owner):
 class Organization(Owner):
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="administered_organizations")
     members = models.ManyToManyField(User, related_name="organizations", blank=True)
-    name = models.TextField(unique=True)
+    name = models.TextField(unique=True, max_length=255)
 
     def __str__(self):
         return self.name
 
 
 class Tag(models.Model):
-    tag = models.TextField(unique=True)
+    tag = models.TextField(unique=True, max_length=255)
 
     def __str__(self):
         return self.tag
@@ -45,7 +45,7 @@ class Tag(models.Model):
 class Ticket(models.Model):
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.OPEN)
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
-    name = models.TextField(null=False, blank=False)
+    name = models.TextField(null=False, blank=False, max_length=255)
     subscribers = models.ManyToManyField(User, blank=True, related_name="subscribed_tickets")
     tags = models.ManyToManyField(Tag, blank=True)
     ts_open = models.DateTimeField(auto_now_add=True)
@@ -100,7 +100,7 @@ class TicketEvent(models.Model):
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.ANSWER)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="events")
     timestamp = models.DateTimeField(auto_now_add=True)
-    info = models.TextField(blank=True)
+    info = models.TextField(blank=True, max_length=262144)
 
     @classmethod
     @transaction.atomic
@@ -160,7 +160,7 @@ class TicketEvent(models.Model):
 class TicketEventAttachment(models.Model):
     event = models.ForeignKey(TicketEvent, on_delete=models.CASCADE, related_name="attachments", null=True, blank=True)
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
-    name = models.TextField()
+    name = models.TextField(max_length=255)
     file = models.FileField()
     timestamp = models.DateTimeField(auto_now_add=True)
     ts_delete = models.DateTimeField(default=timezone.now() + timedelta(hours=12), null=True)
