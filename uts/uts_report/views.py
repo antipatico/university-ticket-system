@@ -24,22 +24,22 @@ def report_generator(request):
 @login_required
 def generate_ticket_report(request, pk):
     ticket = get_object_or_404(Ticket.objects.all(), pk=pk)
-    document_stream = document_from_ticket(ticket, request.build_absolute_uri(settings.MEDIA_URL))
-    return DocxHttpResponse(document_stream, document_name=f"ticket-{ticket.id}-report")
+    document_stream = document_from_ticket(ticket)
+    return DocxHttpResponse(document_stream, document_name=f"report-ticket-{ticket.id}")
 
 
 @login_required
 def generate_closed_tickets_report(request):
     tickets = Ticket.objects.filter(~Q(ts_closed=None))
-    document_stream = document_from_many_tickets(tickets, "Ticket chiusi", request.build_absolute_uri(settings.MEDIA_URL))
-    return DocxHttpResponse(document_stream, document_name=f"ticket-chiusi-report")
+    document_stream = document_from_many_tickets(tickets, "Ticket chiusi")
+    return DocxHttpResponse(document_stream, document_name=f"report-ticket-chiusi")
 
 
 @login_required
 def generate_opened_lastyear_tickets_report(request):
     tickets = Ticket.objects.filter(ts_open__gte=timezone.datetime(year=timezone.now().year, month=1, day=1))
-    document_stream = document_from_many_tickets(tickets, "Ticket aperti quest'anno", request.build_absolute_uri(settings.MEDIA_URL))
-    return DocxHttpResponse(document_stream, document_name=f"ticket-aperti-anno-corrente-report")
+    document_stream = document_from_many_tickets(tickets, "Ticket aperti quest'anno")
+    return DocxHttpResponse(document_stream, document_name=f"report-ticket-aperti-anno-corrente")
 
 
 @login_required
@@ -47,8 +47,8 @@ def generate_opened_lastyear_stillopen_tickets_report(request):
     tickets = Ticket.objects.filter(
         Q(ts_open__gte=timezone.datetime(year=timezone.now().year, month=1, day=1)) &
         Q(ts_closed=None))
-    document_stream = document_from_many_tickets(tickets, "Ticket aperti quest'anno ancora aperti", request.build_absolute_uri(settings.MEDIA_URL))
-    return DocxHttpResponse(document_stream, document_name=f"ticket-aperti-anno-corrente-ancora-aperti-report")
+    document_stream = document_from_many_tickets(tickets, "Ticket aperti quest'anno ancora aperti")
+    return DocxHttpResponse(document_stream, document_name=f"report-ticket-aperti-anno-corrente-ancora-aperti")
 
 
 @login_required

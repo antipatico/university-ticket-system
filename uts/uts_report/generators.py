@@ -4,6 +4,7 @@ from docx.shared import Pt, Inches
 import docx
 import docx.oxml
 import docx.opc.constants
+from django.conf import settings
 from uts_common.models import TicketActions, TicketStatus
 
 
@@ -45,7 +46,7 @@ def add_hyperlink(paragraph, url, text, color="0000FF", underline=True):
     return hyperlink
 
 
-def add_ticket_to_document(ticket, document, base_url, add_title=True):
+def add_ticket_to_document(ticket, document, add_title=True):
     if add_title:
         document.add_heading(ticket.name, level=1)
     #p.add_run(f"Creato il {ticket.ts_open.strftime('%d/%m/%Y')} alle ore {ticket.ts_open.strftime('%H:%M:%S')}").italic = True
@@ -74,22 +75,22 @@ def add_ticket_to_document(ticket, document, base_url, add_title=True):
             p_info.font.size = Pt(10)
             for attachment in event.attachments.all():
                 p = document.add_paragraph(style="List Bullet")
-                hyperlink = add_hyperlink(p, f"{base_url}{attachment.file}", attachment.name)
+                hyperlink = add_hyperlink(p, f"{settings.UTS['BASE_URL']}{settings.MEDIA_URL}{attachment.file}", attachment.name)
     document.add_page_break()
 
 
 # Generates a docx in memory and returns a stream of bytes which is the docx generated
-def document_from_ticket(ticket, base_url):
-    return document_from_many_tickets([ticket], f"{ticket.name}", base_url, add_title=False)
+def document_from_ticket(ticket):
+    return document_from_many_tickets([ticket], f"{ticket.name}", add_title=False)
 
 
 # Generates a docx in memory from many tickets
-def document_from_many_tickets(tickets, title, base_url, add_title=True):
+def document_from_many_tickets(tickets, title, add_title=True):
     document = Document()
     document.add_heading(f"{title}", 0)
     memory_stream = BytesIO()
     for ticket in tickets:
-        add_ticket_to_document(ticket, document, base_url, add_title=add_title)
+        add_ticket_to_document(ticket, document, add_title=add_title)
     document.save(memory_stream)
     memory_stream.seek(0)  # We need to get back at the start of the stream
     return memory_stream

@@ -35,7 +35,7 @@ def send_email_notification(event_id):
     owner = event.owner
     ticket = event.ticket
     subscribers = ticket.subscribers.filter(profile__email_notifications=True)
-    url = "https://qaticket.ing.unimore.it"
+    url = settings.UTS["BASE_URL"]
     ticket_url=f"{url}{reverse('uts_common:ticket_details', args=(ticket.id,))}"
     subject = f"[QATicket] Nuovo evento per {ticket.name} #{ticket.id}"
     message = f"{owner} ha {TicketActions[event.status]} ticket.\n" \

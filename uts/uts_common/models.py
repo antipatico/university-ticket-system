@@ -46,7 +46,6 @@ class Ticket(models.Model):
     status = models.CharField(max_length=32, choices=TicketStatus.choices, default=TicketStatus.OPEN)
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
     name = models.TextField(null=False, blank=False)
-    description = models.TextField(null=True, blank=True)
     subscribers = models.ManyToManyField(User, blank=True, related_name="subscribed_tickets")
     tags = models.ManyToManyField(Tag, blank=True)
     ts_open = models.DateTimeField(auto_now_add=True)

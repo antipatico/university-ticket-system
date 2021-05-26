@@ -179,10 +179,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 CRISPY_FAIL_SILENTLY = not DEBUG
 
-UTS = {
-    'MAX_ATTACHMENT_FILE_SIZE': 10 * 1024 * 1024,
-}
-
 # Email settings
 # By default emails are sent using postfix WITHOUT authentication (relaying).
 # You can edit the settings below providing a valid Amazon AWS key to send
@@ -202,3 +198,14 @@ EMAIL_FROM = "postfix@qaticket.ing.unimore.it"
 # Uncomment the lines below to send emails using postfix
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
+
+
+## Settings related specifically to this application
+# NOTE: the BASE_URL is necessary for two reasons:
+#  1. when running a job inside the scheduler the request object is not present, thus you can't retrieve the base url
+#  2. if running the service with a reverse proxy, the base url returned from the request object will be an url to the
+#     local service.
+UTS = {
+    'MAX_ATTACHMENT_FILE_SIZE': 10 * 1024 * 1024,
+    'BASE_URL': 'http://127.0.0.1:8000',
+}
