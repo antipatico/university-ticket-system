@@ -29,7 +29,7 @@ class Individual(Owner):
 class Organization(Owner):
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="administered_organizations")
     members = models.ManyToManyField(User, related_name="organizations", blank=True)
-    name = models.TextField(unique=True, max_length=255)
+    name = models.CharField(unique=True, max_length=255)
 
     def __str__(self):
         return self.name
