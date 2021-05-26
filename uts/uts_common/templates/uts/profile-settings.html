@@ -2,17 +2,30 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  {% if saveSuccess %}
-<div class="alert alert-success mb-3" role="alert">
-  <strong>Successo!</strong><br/>
-  Impostazioni modificate con successo!
-</div>
-  {% endif %}
   <div class="row">
-    <div class="col-12">
-      <p></p>
-      <h4>Impostazioni Utente</h4>
-        {% crispy form %}
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header"><h5>Impostazioni Utente</h5></div>
+        <div class="card-body">
+
+        {% if saveSuccess %}
+          <div class="alert alert-success mb-3" role="alert">
+            <strong>Successo!</strong><br/>
+            Impostazioni modificate con successo!
+          </div>
+        {% endif %}
+            {% crispy form %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 mb-3">
+      <div class="card">
+        <div class="card-header"><h5>Informazioni Incorrette?</h5></div>
+        <div class="card-body">
+          <p>Le informazioni presenti sul tuo profilo sono state raccolte nel momento di primo accesso tramite il sistema di login universitario <span class="text-muted">(Shibboleth)</span>.</p>
+          <p>Se il tuo profilo contiene informazioni sbagliate, perfavore contatta l'amministratore <a href="mailto:riccardo.lancellotti@unimore.it">Riccardo Lancellotti</a>.</p>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
