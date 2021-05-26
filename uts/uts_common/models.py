@@ -36,7 +36,7 @@ class Organization(Owner):
 
 
 class Tag(models.Model):
-    tag = models.TextField(unique=True, max_length=255)
+    tag = models.CharField(unique=True, max_length=255)
 
     def __str__(self):
         return self.tag
