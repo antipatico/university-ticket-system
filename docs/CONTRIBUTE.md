@@ -130,10 +130,16 @@ il mapping degli [url](/uts/uts/urls.py).
 Una volta installato il venv, sarà necessario installare **Redis** per permettere la comunicazione
 tra il django-q qcluster ed il webserver.
 
-Infine, bisogna [configurare Django](/uts/uts/settings.py), facendo bene attenzione alle
+Dunque, bisogna [configurare Django](/uts/uts/settings.py), facendo bene attenzione alle
 impostazioni per django-q.
 
-Una volta configurato, aprire su un terminale in webserver con
+Successivamente, creare il database con i seguenti comandi
+```
+./manage.py migrate
+./manage.py createscheduledjobs
+```
+
+Una volta configurato, per avviare il server, aprire su un terminale in webserver con
 ```
 ./manage.py runserver
 ```

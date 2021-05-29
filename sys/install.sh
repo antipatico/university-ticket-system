@@ -14,12 +14,6 @@ python3 -m venv --prompt uts-venv ./venv
 source ./venv/bin/activate
 python3 -m pip install --upgrade pip wheel
 python3 -m pip install -r requirements.txt
-pushd uts
-if [ ! -f db.sqlite3 ]; then
-  ./manage.py makemigrations uts_common
-  ./manage.py migrate
-  ./manage.py createscheduledjobs
-fi
 cat <<EOF
 
 Project dependencies installed under 'venv'!
