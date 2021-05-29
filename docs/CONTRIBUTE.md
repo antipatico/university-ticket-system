@@ -122,3 +122,22 @@ il mapping degli [url](/uts/uts/urls.py).
   utilizzando django-q e che verranno poi dunque eseguiti dal `qcluster`.
 * [uts_shibboleth/](/uts/uts_shibboleth): modulo che si occupa dell'autenticazione tramite il
   SSO di UniMore.
+  
+## Installazione dell'ambiente di sviluppo
+È possibile preparare un'ambiente di sviluppo semplicemente eseguendo
+[lo script di installazione](/sys/install.sh) dalla root directory di questa repository.
+
+Una volta installato il venv, sarà necessario installare **Redis** per permettere la comunicazione
+tra il django-q qcluster ed il webserver.
+
+Infine, bisogna [configurare Django](/uts/uts/settings.py), facendo bene attenzione alle
+impostazioni per django-q.
+
+Una volta configurato, aprire su un terminale in webserver con
+```
+./manage.py runserver
+```
+E su un altro terminale il q-cluster
+```
+./manage.py qcluster
+```
