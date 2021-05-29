@@ -150,5 +150,5 @@ E su un altro terminale il q-cluster
 
 ## Autore
 
-Jacopo (antipatico) Scannella
+Jacopo (antipatico) Scannella  
 2021 - All Wrongs Reversed
