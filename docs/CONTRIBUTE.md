@@ -23,6 +23,11 @@
   AWS Simple Email Service.
 * **python-docx**: libreria utilizzata per la generazione dei report `.docx`.
 
+#### Dipendenze Python Opzionali
+* **mysqlclient**: per il supporto al database mysql
+* **django-extensions**: utilizzato in modalità di sviluppo / debug per listare i link generati
+dal router REST.
+
 ### Dipendenze Bootstrap
 * **Bootstrap Icons 1.5**: fornisce le icone utilizzate per il frontend
 
@@ -58,4 +63,62 @@ dell'organizzazione)
 
 ## Organizzazione del codice
 
-Il codice risiede nella cartella **[uts](/uts)**
+Il codice risiede nella cartella **[uts/](/uts)**, ed è organizzato con una gerarchia
+di cartelle simile alla seguente:
+
+```
+├── media
+├── uts
+├── uts_common
+│   ├── management
+│   │   └── commands
+│   ├── migrations
+│   ├── static
+│   │   ├── images
+│   │   ├── js
+│   │   │   └── components
+│   │   └── styles
+│   └── templates
+│       └── uts
+├── uts_report
+│   └── templates
+│       └── uts_report
+├── uts_rest
+├── uts_scheduler
+│   ├── management
+│   │   └── commands
+│   └── templates
+│       └── uts_scheduler
+└── uts_shibboleth
+    └── templates
+        └── uts_shibboleth
+```
+
+* [uts/](/uts/uts): contiene le [impostazioni](/uts/uts/settings.py) di Django ed
+il mapping degli [url](/uts/uts/urls.py).
+* [uts_common/](/uts/uts_common): modulo principale, così strutturato:
+  + [management/commands/](/uts/uts_common/management/commands): contiene gli script `populatedb` e `createadmin`
+    utilizzabili tramite lo script `manage.py`, utili per la creazione di un db sperimentale
+    per lo sviluppo.
+  + [static/](/uts/uts_common/static): contiene immagini, javascript (**Vue**) e stili CSS.
+    + [js/components/](/uts/uts_common/static/js/components): componenti **Vue** modulari
+      utilizzati negli script delle pagine.
+  + [templates/](/uts/uts_common/templates): contiene i template html Django + Vue per il sito di base
+  + [decorators.py](/uts/uts_common/decorators.py): contiene decoratori utili, utilizzati nel
+    resto del programma.
+  + [signals.py](/uts/uts_common/signals.py): contiene i segnali, che eseguono codice dopo 
+    l'avvenimento di determinati eventi.
+* [uts_report/](/uts/uts_report): modulo per la generazione dei report.
+  + [generators.py](/uts/uts_report/generators.py): funzioni utilizzate per generare i reports
+* [uts_rest/](/uts/uts_rest): modulo che offre le API REST.
+  + [serializers.py](/uts/uts_rest/serializers.py): ospita le classi per la serializzazione dei dati
+  + [urls.py](/uts/uts_rest/urls.py): mappa le API REST sui vari link.
+  + [views.py](/uts/uts_rest/views.py): classi corrispondenti alle API rest.
+* [uts_scheduler/](/uts/uts_scheduler): modulo che si occupa della schedulazione degli eventi
+  + [management/commands](/uts/uts_scheduler/management/commands): contiene lo script
+    `createscheduledjobs` utilizzabile tramite lo script `manage.py`. Questo script viene
+    utilizzato nella fase di deployement per creare i di manutenzione job ripetuti con cadenza fissa.
+  + [schedules.py](/uts/uts_scheduler/schedules.py): contiene i job che vengono schedulati
+  utilizzando django-q e che verranno poi dunque eseguiti dal `qcluster`.
+* [uts_shibboleth/](/uts/uts_shibboleth): modulo che si occupa dell'autenticazione tramite il
+  SSO di UniMore.
