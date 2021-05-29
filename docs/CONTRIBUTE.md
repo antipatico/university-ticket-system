@@ -147,3 +147,8 @@ E su un altro terminale il q-cluster
 ```
 ./manage.py qcluster
 ```
+
+## Autore
+
+Jacopo (antipatico) Scannella
+2021 - All Wrongs Reversed
