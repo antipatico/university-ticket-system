@@ -101,3 +101,20 @@ o filtri avanzati.
 ![report generator](images/report-generator.png)
 
 ## Pannello di amministrazione
+
+Il pannello di amministrazione è un pannello di amministrazione classico di Django,
+che permette di:
+* Modificare i dati degli utenti.
+* Creare nuove organizzazioni.
+* Modificare l'amministratore delle organizzazioni.
+* Vedere le azioni programmate (invio email, nuovi ticket, azioni ticket, azioni di manutenzione).
+* Vedere gli esiti delle azioni programmate.
+* Aggiungere o rimuovere amministratori.
+* Modificare i ticket e gli eventi associati agli stessi.
+
+![admin panel](images/admin-panel.png)
+
+## Author
+
+Jacopo (antipatico) Scannella  
+2021 - All Wrongs Reversed
