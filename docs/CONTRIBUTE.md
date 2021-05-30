@@ -148,6 +148,26 @@ E su un altro terminale il q-cluster
 ./manage.py qcluster
 ```
 
+## Scelte progettuali e limiti
+Ho preso molte scelte e alcune non sono state semplici, il discorso
+delle organizzazioni è molto complesso, soprattuto dal punto di vista
+della sicurezza. Per finire lo sviluppo in tempo breve ed evitare
+disastri, ho preso queste decisioni:
+1. Le organizzazioni possono essere create solo dagli amministratori
+del sito tramite il pannello di amministrazione
+2. L'amministratore di un organizzazione può aggiungere e rimuovere
+utenti dalla stessa
+3. Tutti gli utenti che fanno parte di un organizzazione possono creare ticket come la stessa
+4. Chiunque può vedere e seguire qualunque ticket, nella index però
+appariranno solo i propri ticket e i ticket seguiti.
+5. Quando viene aperto un ticket come un organizzazione, tutti gli
+utenti all'interno della stessa vengono automaticamente iscritti al
+ticket.
+6. Le notifiche via mail, vengono inviate solo agli utenti che le
+hanno abilitate dalle impostazioni e solo sui ticket a cui sono
+iscritti.
+
+
 ## Autore
 
 Jacopo (antipatico) Scannella  
