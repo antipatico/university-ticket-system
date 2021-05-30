@@ -74,7 +74,7 @@ const TicketsApp = {
                     this.error = "URL non valido";
                     return;
                 }
-                data["duplicate_id"] = match[1];
+                data["duplicate_id"] = parseInt(match[1]);
                 delete data["info"];
             }
 
