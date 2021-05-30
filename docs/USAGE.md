@@ -113,8 +113,3 @@ che permette di:
 * Modificare i ticket e gli eventi associati agli stessi.
 
 ![admin panel](images/admin-panel.png)
-
-## Author
-
-Jacopo (antipatico) Scannella  
-2021 - All Wrongs Reversed

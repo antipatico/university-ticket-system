@@ -24,11 +24,8 @@ Sono disponibili tre documenti principale di documentazione:
   per gli amministratori del sito.
 * **[Developer Guide](docs/CONTRIBUTE.md)**: spiega tutto il software che è utilizzato per la
   realizzazione del sito, la struttura del codice e le scelte tecniche più importanti.
-* **[Deployment Guide](docs/DEPLOY.md)**: contiene le specifiche dell'infrastruttura e le
-configurazioni salienti per la messa in produzione.
   
 ## Autore
 
-Jacopo (antipatico) Scannella
-
+Jacopo (antipatico) Scannella  
 2021 - All Wrongs Reversed

@@ -166,9 +166,3 @@ ticket.
 6. Le notifiche via mail, vengono inviate solo agli utenti che le
 hanno abilitate dalle impostazioni e solo sui ticket a cui sono
 iscritti.
-
-
-## Autore
-
-Jacopo (antipatico) Scannella  
-2021 - All Wrongs Reversed
