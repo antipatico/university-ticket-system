@@ -1,1 +1,15 @@
 {% extends "uts/base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row pt-5">
+    <div class="col-lg-8">
+      <h1 class="welcome-title">Benvenuto sul sistema di Ticketing per il QA dell'Università di Modena e Reggio Emilia</h1>
+      <p class="welcome-subtitle mb-5">Connettiti con il tuo account UniMore per poter visualizzare, creare e partecipare ai ticket inerenti al Controllo Qualità dell'Università!</p>
+      <a class="btn btn-lg btn-primary fw-500 me-3" href="{% url "uts_shibboleth:login" %}">Accedi</a>
+      <a class="btn btn-lg btn-primary-soft text-primary fw-500" href="{%  static "docs/UserGuide.pdf" %}" target="_blank">Documentazione</a>
+    </div>
+  <div class="col-lg-4">
+    <img class="img-fluid mx-auto d-block" src="https://upload.wikimedia.org/wikipedia/commons/4/42/Logo-unimore.png">
+  </div>
+  </div>
+{% endblock %}

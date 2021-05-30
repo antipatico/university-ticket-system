@@ -1,3 +1,5 @@
+@import url('http://fonts.cdnfonts.com/css/metropolis-2');
+
 /* Hide asterisks from Crispy Forms */
 .asteriskField {
     display: none;
@@ -23,4 +25,22 @@ pre {
     white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+/* Welcome page style */
+.welcome-title {
+  font-size: 2.5rem;
+  font-family: 'Metropolis', sans-serif;
+  color: rgb(54, 61, 71);
+}
+.welcome-subtitle {
+  font-size: 1.15rem;
+  color: rgb(105, 112, 122);
+  font-family: "Metropolis", sans-serif;
+  font-weight: normal;
+}
+.btn-primary-soft {
+    color: #000;
+    background-color: #dae7fb;
+    border-color: #dae7fb;
 }
